@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ContentPage BackgroundColor="White" 
+		xmlns="http://xamarin.com/schemas/2014/forms" 
+		xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" 
+		xmlns:local="clr-namespace:LiteHelper" 
+		xmlns:controls="clr-namespace:LiteHelper.Controls"
+		x:Class="LiteHelper.History.HistoryPage">
+	<Grid RowSpacing="0" ColumnSpacing="0">
+		<Grid.RowDefinitions>
+			<RowDefinition Height="22"/>
+			<RowDefinition Height="44"/>
+			<RowDefinition Height="*"/>
+		</Grid.RowDefinitions>
+
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition Width="40"/>
+			<ColumnDefinition Width="*"/>
+			<ColumnDefinition Width="40"/>
+		</Grid.ColumnDefinitions>
+		
+		<BoxView Grid.RowSpan="2" BackgroundColor="Black" Grid.ColumnSpan="3"/>
+		<Label TextColor="#F07810" Text="История" Grid.ColumnSpan="3" FontSize="18" FontAttributes="Bold" Grid.Row="1" HorizontalOptions="Center" VerticalOptions="Center"/>
+		<Button Grid.Row="1" Grid.Column="0" HorizontalOptions="End" Image="back.png" Command="{Binding CloseCommand}" BackgroundColor="Transparent" VerticalOptions="Center"/>
+		<Button Grid.Row="1" Grid.Column="2" HorizontalOptions="End" Image="delete.png" Command="{Binding DeleteCommand}" BackgroundColor="Transparent" VerticalOptions="Center"/>
+
+		<ListView Grid.Row="2" Grid.ColumnSpan="3" RowHeight="60" ItemsSource="{Binding HistoryList}">
+			<ListView.ItemTemplate>
+                <DataTemplate>
+                <ViewCell>
+                   <Grid Padding="10,8,10,8" RowSpacing="2">
+			        	<Grid.ColumnDefinitions>
+				        	<ColumnDefinition Width="*"/>
+				        	<ColumnDefinition Width="*"/>
+				        </Grid.ColumnDefinitions>
+				        <Grid.RowDefinitions>
+				        	<RowDefinition Height="*"/>
+				        	<RowDefinition Height="Auto"/>
+				        </Grid.RowDefinitions>
+							
+				       <Label Grid.Column="0" Grid.Row="0" FontAttributes="Bold" FontSize="18" TextColor="#F07810" VerticalOptions="Center" Text="{Binding Code}" HorizontalTextAlignment="Start"/>
+				       <Label Grid.Column="0" Grid.Row="1" FontSize="14" TextColor="Black" VerticalOptions="Center" Text="{Binding StatusText}" HorizontalTextAlignment="Start"/>
+
+						<Button Grid.Column="1" Grid.RowSpan="2" Margin="0,8,0,8" IsVisible="{Binding ResendVisible}" BackgroundColor="#F07810" TextColor="Black" VerticalOptions="Center" HorizontalOptions="End" Text="Еще раз" Command="{Binding ResendCommand}"/>
+					</Grid>
+                  </ViewCell>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+		</ListView>
+
+		
+	</Grid>
+</ContentPage>

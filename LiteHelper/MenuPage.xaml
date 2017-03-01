@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ContentPage BackgroundColor="White" xmlns="http://xamarin.com/schemas/2014/forms" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" xmlns:local="clr-namespace:LiteHelper" x:Class="LiteHelper.MenuPage">
+	<Grid RowSpacing="4">
+		<Grid.RowDefinitions>
+			<RowDefinition Height="22"/>
+			<RowDefinition Height="40"/>
+			<RowDefinition Height="40"/>
+			<RowDefinition Height="40"/>
+			<RowDefinition Height="40"/>
+			<RowDefinition Height="40"/>
+			<RowDefinition Height="40"/>
+			<RowDefinition Height="40"/>
+			<RowDefinition Height="54"/>
+			<RowDefinition Height="*"/>
+			<RowDefinition Height="54"/>
+		</Grid.RowDefinitions>
+		<BoxView BackgroundColor="Black" Grid.RowSpan="3"/>
+		<Label TextColor="#F07810" Text="PIN" Grid.Row="1" HorizontalTextAlignment="Start" HorizontalOptions="Start" Margin="10,0,10,0" VerticalOptions="Center"/>
+		<Entry Text="{Binding PIN}" TextColor="#F07810" FontAttributes="Bold" Grid.Row="1" HorizontalTextAlignment="End" Margin="10,0,10,0" Keyboard="Numeric"/>
+
+		<Label TextColor="#F07810" Text="Город" Grid.Row="2" HorizontalTextAlignment="Start" HorizontalOptions="Start" Margin="10,0,10,0" VerticalOptions="Center"/>
+		<Picker ItemsSource="{Binding Cities}" SelectedItem="{Binding SelectedCity, Mode=TwoWay}" SelectedIndex="{Binding SelectedCityIndex}" TextColor="#F07810" Grid.Row="2" HorizontalOptions="End" Margin="10,0,10,0"/>
+
+		
+		<Label TextColor="Black" Text="Key 1" Grid.Row="3" HorizontalTextAlignment="Start" HorizontalOptions="Start" Margin="10,0,10,0" VerticalOptions="Center"/>
+		<Entry Text="{Binding Prefix1}" BackgroundColor="Transparent" FontAttributes="Bold" TextColor="#F07810" Grid.Row="3" HorizontalTextAlignment="End" Margin="10,0,10,0"/>
+
+		<Label TextColor="Black" Text="Key 2" Grid.Row="4" HorizontalTextAlignment="Start" HorizontalOptions="Start" Margin="10,0,10,0" VerticalOptions="Center"/>
+		<Entry Text="{Binding Prefix2}" BackgroundColor="Transparent" FontAttributes="Bold" TextColor="#F07810" Grid.Row="4" HorizontalTextAlignment="End" Margin="10,0,10,0"/>
+
+		<Label TextColor="Black" Text="Key 3" Grid.Row="5" HorizontalTextAlignment="Start" HorizontalOptions="Start" Margin="10,0,10,0" VerticalOptions="Center"/>
+		<Entry Text="{Binding Prefix3}" BackgroundColor="Transparent" FontAttributes="Bold" TextColor="#F07810" Grid.Row="5" HorizontalTextAlignment="End" Margin="10,0,10,0"/>
+
+		<Label TextColor="Black" Text="Key 4" Grid.Row="6" HorizontalTextAlignment="Start" HorizontalOptions="Start" Margin="10,0,10,0" VerticalOptions="Center"/>
+		<Entry Text="{Binding Prefix4}" BackgroundColor="Transparent" FontAttributes="Bold" TextColor="#F07810" Grid.Row="6" HorizontalTextAlignment="End" Margin="10,0,10,0"/>
+
+		<Label TextColor="Black" Text="Key 5" Grid.Row="7" HorizontalTextAlignment="Start" HorizontalOptions="Start" Margin="10,0,10,0" VerticalOptions="Center"/>
+		<Entry Text="{Binding Prefix5}" BackgroundColor="Transparent" FontAttributes="Bold" TextColor="#F07810" Grid.Row="7" HorizontalTextAlignment="End" Margin="10,0,10,0"/>
+
+		<Grid Margin="10,0,10,0" Grid.Row="8">
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="Auto"/>
+				<ColumnDefinition Width="*"/>
+			</Grid.ColumnDefinitions>
+			<Grid.GestureRecognizers>
+				<TapGestureRecognizer x:Name="ContactRecognizer"/>
+			</Grid.GestureRecognizers>
+
+			<Image Source="mail.png" Grid.Column="0" VerticalOptions="Center" HorizontalOptions="Start"/>
+			<Label TextColor="Black" Text="Написать разработчику" Grid.Column="1" HorizontalTextAlignment="Start" HorizontalOptions="Start" VerticalOptions="Center"/>
+		
+		</Grid>
+		
+		
+		<Label TextColor="Black" Text="{Binding DonateText}" Grid.Row="9" FontSize="9" HorizontalTextAlignment="Start" HorizontalOptions="Start" Margin="10,0,10,0" VerticalOptions="End"/>
+		<Button TextColor="Black" Grid.Row="10" BackgroundColor="#F07810" Margin="5,5,5,5" Command="{Binding BuyCommand}" Text="Отключить рекламу"/>
+	</Grid>
+</ContentPage>

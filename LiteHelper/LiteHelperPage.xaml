@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ContentPage BackgroundColor="White" xmlns="http://xamarin.com/schemas/2014/forms" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" xmlns:local="clr-namespace:LiteHelper" x:Class="LiteHelper.LiteHelperPage">
+	<Grid RowSpacing="0">
+		<Grid.RowDefinitions>
+			<RowDefinition>
+				<RowDefinition.Height>
+	              <OnPlatform x:TypeArguments="GridLength"  iOS="22"  Android="0" WinPhone="0" />
+	            </RowDefinition.Height>
+			</RowDefinition>
+			<RowDefinition Height="44"/>
+			<RowDefinition Height="*"/>
+			<RowDefinition Height="Auto"/>
+		</Grid.RowDefinitions>
+		<BoxView Grid.Row="1" BackgroundColor="Black"/>
+
+		<Grid Grid.Row="1" VerticalOptions="Center" HorizontalOptions="Fill" ColumnSpacing="0">
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="40"/>
+				<ColumnDefinition Width="*"/>
+			</Grid.ColumnDefinitions>
+
+			<Button Grid.Column="0" Grid.ColumnSpan="2" BackgroundColor="#F07810"  Margin="2,6,2,6" IsEnabled="false"/>
+			<Label Grid.Column="1" Text="{Binding Code}" TextColor="Black" FontAttributes="Bold" VerticalOptions="Center" FontSize="14" VerticalTextAlignment="Center" Margin="15,0,15,0"/>
+			<Label Grid.Column="1" Text="{Binding CodePlaceholder}" Opacity="0.5" TextColor="Black" FontSize="14" VerticalOptions="Center" VerticalTextAlignment="Center" Margin="15,0,15,0"/>
+			<Button Grid.Column="0" Image="menu.png" BackgroundColor="Transparent" VerticalOptions="Center" Command="{Binding ShowMenuCommand}"/> 	
+				
+		</Grid>
+
+		
+		<Grid Grid.Row="2" ColumnSpacing="0" Margin="0,4,0,4">
+			<Grid.RowDefinitions>
+				<RowDefinition Height="30"/>
+				<RowDefinition Height="30"/>
+				<RowDefinition Height="*"/>
+			</Grid.RowDefinitions>
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="*"/>
+				<ColumnDefinition Width="30"/>
+			</Grid.ColumnDefinitions>
+
+			<WebView x:Name="WebView" Source="{Binding Source}" Grid.RowSpan="3" Grid.ColumnSpan="2"/>
+			<Button Image="refresh.png" Grid.Row="0" Grid.Column="1" Command="{Binding RefreshCommand}" Margin="2,2,2,2" BackgroundColor="#F07810" HorizontalOptions="End" VerticalOptions="Start"/>
+			<Button Image="history.png" Grid.Row="1" Grid.Column="1" Command="{Binding ShowHistoryCommand}" Margin="2,2,2,2" BackgroundColor="#F07810" HorizontalOptions="End" VerticalOptions="Start"/>
+		</Grid>
+
+		<Grid RowSpacing="1" ColumnSpacing="1" Grid.Row="3" Padding="2,-2,2,2" VerticalOptions="End">
+			<Grid.RowDefinitions>
+				<RowDefinition Height="44"/>
+				<RowDefinition Height="44"/>
+				<RowDefinition Height="44"/>
+			</Grid.RowDefinitions>
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="*"/>
+				<ColumnDefinition Width="*"/>
+				<ColumnDefinition Width="*"/>
+				<ColumnDefinition Width="*"/>
+				<ColumnDefinition Width="*"/>
+				<ColumnDefinition Width="1.5*"/>
+			</Grid.ColumnDefinitions>
+			<Button Grid.Row="0" Grid.Column="0" BackgroundColor="#F07810" Text="{Binding Prefix1}" TextColor="Black" FontAttributes="Bold" Command="{Binding _0_0_Command}"/>
+			<Button Grid.Row="0" Grid.Column="1" BackgroundColor="#F07810" Text="{Binding Prefix2}" TextColor="Black" FontAttributes="Bold" Command="{Binding _0_1_Command}"/>
+			<Button Grid.Row="0" Grid.Column="2" BackgroundColor="#F07810" Text="{Binding Prefix3}" TextColor="Black" FontAttributes="Bold" Command="{Binding _0_2_Command}"/>
+			<Button Grid.Row="0" Grid.Column="3" BackgroundColor="#F07810" Text="{Binding Prefix4}" TextColor="Black" FontAttributes="Bold" Command="{Binding _0_3_Command}"/>
+			<Button Grid.Row="0" Grid.Column="4" BackgroundColor="#F07810" Text="{Binding Prefix5}" TextColor="Black" FontAttributes="Bold" Command="{Binding _0_4_Command}"/>
+			<Button Grid.Row="0" Grid.Column="5" BackgroundColor="#F07810" Command="{Binding BackspaceCommand}" Image="ic_keyboard_backspace_black_24dp.png"/>
+			<Button Grid.Row="1" Grid.Column="0" BackgroundColor="#F07810" Text="0" TextColor="Black" FontAttributes="Bold" Command="{Binding _0_Command}"/>
+			<Button Grid.Row="1" Grid.Column="1" BackgroundColor="#F07810" Text="1" TextColor="Black" FontAttributes="Bold" Command="{Binding _1_Command}"/>
+			<Button Grid.Row="1" Grid.Column="2" BackgroundColor="#F07810" Text="2" TextColor="Black" FontAttributes="Bold" Command="{Binding _2_Command}"/>
+			<Button Grid.Row="1" Grid.Column="3" BackgroundColor="#F07810" Text="3" TextColor="Black" FontAttributes="Bold" Command="{Binding _3_Command}"/>
+			<Button Grid.Row="1" Grid.Column="4" BackgroundColor="#F07810" Text="4" TextColor="Black" FontAttributes="Bold" Command="{Binding _4_Command}"/>
+			<Button Grid.Row="1" Grid.Column="5" BackgroundColor="#F07810" Text="Clear" TextColor="Black" FontAttributes="Bold" Command="{Binding ClearCommand}"/>
+			<Button Grid.Row="2" Grid.Column="0" BackgroundColor="#F07810" Text="5" TextColor="Black" FontAttributes="Bold" Command="{Binding _5_Command}"/>
+			<Button Grid.Row="2" Grid.Column="1" BackgroundColor="#F07810" Text="6" TextColor="Black" FontAttributes="Bold" Command="{Binding _6_Command}"/>
+			<Button Grid.Row="2" Grid.Column="2" BackgroundColor="#F07810" Text="7" TextColor="Black" FontAttributes="Bold" Command="{Binding _7_Command}"/>
+			<Button Grid.Row="2" Grid.Column="3" BackgroundColor="#F07810" Text="8" TextColor="Black" FontAttributes="Bold" Command="{Binding _8_Command}"/>
+			<Button Grid.Row="2" Grid.Column="4" BackgroundColor="#F07810" Text="9" TextColor="Black" FontAttributes="Bold" Command="{Binding _9_Command}"/>
+			<Button Grid.Row="2" Grid.Column="5" BackgroundColor="#F07810" Text="Send" TextColor="Black" FontAttributes="Bold" Command="{Binding SendCommand}"/>
+		</Grid>
+	</Grid>
+</ContentPage>

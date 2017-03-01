@@ -1,0 +1,128 @@
+﻿using System;
+using System.Collections.Generic;
+
+namespace LiteHelper
+{
+	public static class Constants
+	{
+		public static string ShowMenuMessage = "ShowMenuMessage";
+
+		public static string Key1 = "Key1";
+		public static string Key2 = "Key2";
+		public static string Key3 = "Key3";
+		public static string Key4 = "Key4";
+		public static string Key5 = "Key5";
+
+		public static string City = "City";
+		public static string Pin = "Pin";
+
+
+		public static string DefaultCityCode = "kaliningrad";
+		public static string DefaultCity = "Калининград";
+
+
+		public static Dictionary<string, string> CityList = new Dictionary<string, string> {
+			{"Agent24", "agent24"},
+			{"Chara", "chara"},
+			{"Fasten", "fasten"},
+			{"Game", "game"},
+			{"Griddynamics", "griddynamics"},
+			{"I Love Msk", "ilovemsk"},
+			{"Memory", "memory"},
+			{"Munich", "munich"},
+			{"Packman", "pacman"},
+			{"Pattaya", "pattaya"},
+			{"Puzzle", "puzzle"},
+			{"Rossosh", "rossosh"},
+			{"Walk", "walk"},
+			{"Абакан", "abakan"},
+			{"Антверпен", "antwerp"},
+			{"Армавир", "armawir"},
+			{"Архангельск", "arh"},
+			{"Астрахань", "astrakhan"},
+			{"Ахтубинск", "ahtubinsk"},
+			{"Ачинск", "achinsk"},
+			{"Балаково", "balakovo"},
+			{"Белово", "belovo"},
+			{"Великие Луки", "vluki"},
+			{"Владивосток", "vl"},
+			{"Владикавказ", "vladikavkaz"},
+			{"Волгоград", "vlg"},
+			{"Воронеж", "vrn"},
+			{"Выкса", "viksa"},
+			{"Гамбург", "hamburg"},
+			{"Димитровград", "dimitrovgrad"},
+			{"Димитров", "dmitrov"},
+			{"Дубна", "dubna"},
+			{"Екатеринбург", "e-burg"},
+			{"Запорожье", "zp"},
+			{"Зеленоград", "zelenograd"},
+			{"Ижевск", "izhevsk"},
+			{"Иркутск", "irkutsk"},
+			{"Казань", "kazan"},
+			{"Калининград", "kaliningrad"},
+			{"Калуга", "kaluga"},
+			{"Кемерово", "kemerovo"},
+			{"Киров", "kirov"},
+			{"Краснодар", "krasnodar"},
+			{"Красноярск", "krsk"},
+			{"Кременчуг", "kremenchug"},
+			{"Кубок", "kubok"},
+			{"Кулебаки", "kulebaki"},
+			{"Лиски", "liski"},
+			{"Люберцы", "lubercy"},
+			{"Мега-Астрахань", "mega-astrakhan"},
+			{"Мега-Великие Луки", "mega-vluki"},
+			{"Мега-Москва", "mega-moscow"},
+			{"Мега-Самара", "mega-samara"},
+			{"Миргород и Лубны", "mirgorod"},
+			{"Москва", "moscow"},
+			{"Москва-beta", "msk"},
+			{"Набережные Челны", "chelny"},
+			{"Нерюнгри", "nerungri"},
+			{"Нижний Новгород", "nnov"},
+			{"Новокузнецк", "nvkz"},
+			{"Новороссийск", "nvrsk"},
+			{"Новосибирск", "novosib"},
+			{"Норильск", "norilsk"},
+			{"Обнинск", "obninsk"},
+			{"Орел", "orel"},
+			{"Оренбург", "orenburg"},
+			{"Пермь", "perm"},
+			{"Подгорное", "demo"},
+			{"Полтава", "poltava"},
+			{"Псков", "pskov"},
+			{"Раменское", "ramenskoe"},
+			{"Рига", "riga"},
+			{"Ростов-на-Дону", "rostov"},
+			{"Самара", "samara"},
+			{"Санкт-Петербург", "spb"},
+			{"Саратов", "saratov"},
+			{"Севастополь", "sevastopol"},
+			{"Симферополь", "simf"},
+			{"Смоленск", "smolensk"},
+			{"Сортавала", "sortavala"},
+			{"Сосновый Бор", "sosnovybor"},
+			{"Сочи", "sochi"},
+			{"Ставрополь", "stavropol"},
+			{"Старый Оскол", "oskol"},
+			{"Стрежевой", "strezhevoy"},
+			{"Таксовичкоф", "taxovichkof"},
+			{"Тверь", "tver"},
+			{"Тольятти", "tlt"},
+			{"Томск", "tomsk"},
+			{"Тула", "tula"},
+			{"Ульяновск", "ul"},
+			{"Феодосия", "feodosia"},
+			{"Черняховск", "chernyahovsk"},
+			{"Шатура и Рошаль", "shatura"},
+			{"Щелково", "schelkovo"},
+			{"Южноуральск", "uzhnouralsk"},
+			{"Ялта", "yalta"},
+		};
+
+		public static string AppDisplayName = "Dozor Lite Helper";
+
+		public static string SupportEmail = "cuckooshka.kgd@gmail.com";
+	}
+}
