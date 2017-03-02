@@ -20,8 +20,8 @@
 			</Grid.ColumnDefinitions>
 
 			<Button Grid.Column="0" Grid.ColumnSpan="2" BackgroundColor="#F07810"  Margin="2,6,2,6" IsEnabled="false"/>
-			<Label Grid.Column="1" Text="{Binding Code}" TextColor="Black" FontAttributes="Bold" VerticalOptions="Center" FontSize="14" VerticalTextAlignment="Center" Margin="15,0,15,0"/>
-			<Label Grid.Column="1" Text="{Binding CodePlaceholder}" Opacity="0.5" TextColor="Black" FontSize="14" VerticalOptions="Center" VerticalTextAlignment="Center" Margin="15,0,15,0"/>
+			<Label Grid.Column="1" Text="{Binding Code}" TextColor="Black" FontAttributes="Bold" VerticalOptions="Center" FontSize="17" VerticalTextAlignment="Center" Margin="15,0,15,0"/>
+			<Label Grid.Column="1" Text="{Binding CodePlaceholder}" Opacity="0.5" TextColor="Black" FontSize="17" VerticalOptions="Center" VerticalTextAlignment="Center" Margin="15,0,15,0"/>
 			<Button Grid.Column="0" Image="menu.png" BackgroundColor="Transparent" VerticalOptions="Center" Command="{Binding ShowMenuCommand}"/> 	
 				
 		</Grid>
@@ -37,8 +37,8 @@
 				<ColumnDefinition Width="*"/>
 				<ColumnDefinition Width="30"/>
 			</Grid.ColumnDefinitions>
-
-			<WebView x:Name="WebView" Source="{Binding Source}" Grid.RowSpan="3" Grid.ColumnSpan="2"/>
+			<ActivityIndicator IsVisible="{Binding IsLoading}" Grid.RowSpan="3" Grid.ColumnSpan="2" IsRunning="true" VerticalOptions="Start" HorizontalOptions="Center" Margin="0,15,0,0"/>
+			<WebView x:Name="WebView" IsVisible="{Binding IsLoading, Converter={StaticResource CnvBlInvert}}" Source="{Binding Source}" Grid.RowSpan="3" Grid.ColumnSpan="2"/>
 			<Button Image="refresh.png" Grid.Row="0" Grid.Column="1" Command="{Binding RefreshCommand}" Margin="2,2,2,2" BackgroundColor="#F07810" HorizontalOptions="End" VerticalOptions="Start"/>
 			<Button Image="history.png" Grid.Row="1" Grid.Column="1" Command="{Binding ShowHistoryCommand}" Margin="2,2,2,2" BackgroundColor="#F07810" HorizontalOptions="End" VerticalOptions="Start"/>
 		</Grid>

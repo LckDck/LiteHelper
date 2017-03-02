@@ -40,5 +40,11 @@ namespace LiteHelper.iOS.InterfaceImplementation
 			return defaults.StringForKey (key);
 		}
 
+		public void Delete (string key)
+		{
+			var defaults = NSUserDefaults.StandardUserDefaults;
+			defaults.RemoveObject (key);
+			defaults.Synchronize ();
+		}
 	}
 }

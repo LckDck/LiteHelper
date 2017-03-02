@@ -5,6 +5,7 @@ using Autofac;
 using Autofac.Extras.CommonServiceLocator;
 using Foundation;
 using LiteHelper.iOS.InterfaceImplementation;
+using LiteHelper.Managers;
 using Microsoft.Practices.ServiceLocation;
 using UIKit;
 
@@ -19,6 +20,7 @@ namespace LiteHelper.iOS
 
 			var builder = new ContainerBuilder ();
 
+			builder.RegisterType<CodeStorageManager> ().InstancePerLifetimeScope ();
 
 			builder.RegisterInstance (new InternalStorage ())
 				   .As<IInternalStorage> ();

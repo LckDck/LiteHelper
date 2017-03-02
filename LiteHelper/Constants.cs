@@ -16,6 +16,8 @@ namespace LiteHelper
 		public static string City = "City";
 		public static string Pin = "Pin";
 
+		public static string Codes = "Codes";
+
 
 		public static string DefaultCityCode = "kaliningrad";
 		public static string DefaultCity = "Калининград";

@@ -21,7 +21,7 @@ namespace LiteHelper.History
 				case AnswerStatus.Accepted:
 					return "Принят";
 					case AnswerStatus.NoResponse:
-					return "Сбой отправки";
+					return "Отправляется...";
 					case AnswerStatus.NotAccepted:
 					return "Не принят.";
 					case AnswerStatus.FalseCode:
@@ -36,19 +36,6 @@ namespace LiteHelper.History
 		}
 
 
-		public bool ResendVisible { 
-			get {
-				return Status == AnswerStatus.NoResponse;
-			}
-		}
 
-		ICommand _resendCommand;
-		public ICommand ResendCommand {
-			get {
-				return _resendCommand ?? (_resendCommand = new DelegateCommand ((obj) => {
-					
-				}));
-			}
-		}
 	}
 }

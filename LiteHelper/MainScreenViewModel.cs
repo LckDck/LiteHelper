@@ -7,6 +7,7 @@ using System.Windows.Input;
 using Foundation.Commands;
 using Foundation.MVVM.ViewModels;
 using LiteHelper.History;
+using LiteHelper.Managers;
 using Microsoft.Practices.ServiceLocation;
 using Xamarin.Forms;
 
@@ -16,9 +17,13 @@ namespace LiteHelper
 	{
 		IInternalStorage _storage;
 		List<string> _cityNames;
+
+		CodeStorageManager _codeStorageManager;
+
 		public MainScreenViewModel ()
 		{
 			_storage = ServiceLocator.Current.GetInstance<IInternalStorage> ();
+			_codeStorageManager = ServiceLocator.Current.GetInstance<CodeStorageManager> ();
 			_cityNames = new List<string> (Constants.CityList.Keys);
 			var savedPin = _storage.RetrieveString (Constants.Pin);
 			PIN = (string.IsNullOrEmpty(savedPin)) ? "1111111" : savedPin;
@@ -39,15 +44,32 @@ namespace LiteHelper
 			var savedKey5 = _storage.RetrieveString (Constants.Key5);
 			Prefix5 = (string.IsNullOrEmpty (savedKey5)) ? Keyboard._0_4_Text : savedKey5;
 
+
+
 			Load ();
 		}
 
 		async void Load ()
 		{
+			IsLoading = true;
+			Source = null;
 			var httpClient = new HttpClient ();
 			var html = await httpClient.GetStringAsync ($"http://lite.dzzzr.ru/{CityCode}/go/?pin={PIN}");
 			System.Diagnostics.Debug.WriteLine (html);
 			Source = new HtmlWebViewSource { Html = html};
+			IsLoading = false;
+		}
+
+
+		bool _isLoading;
+		public bool IsLoading { 
+			get {
+				return _isLoading;
+			}
+			set {
+				_isLoading = value;
+				RaisePropertyChanged (() => IsLoading);
+			}
 		}
 
 
@@ -80,6 +102,9 @@ namespace LiteHelper
 		public ICommand SendCommand {
 			get {
 				return _sendCommand ?? (_sendCommand = new DelegateCommand ((obj) => {
+					if (!String.IsNullOrEmpty (Code)) {
+						_codeStorageManager.AddCode (Code, AnswerStatus.NoResponse);
+					}
 					Code = string.Empty;
 					Refresh ();
 				}));

@@ -13,6 +13,7 @@ using Microsoft.Practices.ServiceLocation;
 using Autofac.Extras.CommonServiceLocator;
 using LiteHelper.History;
 using LiteHelper.Interfaces;
+using LiteHelper.Managers;
 
 namespace LiteHelper.Droid
 {
@@ -31,6 +32,8 @@ namespace LiteHelper.Droid
 
 			builder.RegisterInstance (new InternalStorage ())
 			       .As<IInternalStorage> ();
+
+			builder.RegisterType<CodeStorageManager> ().InstancePerLifetimeScope ();
 
 			builder.RegisterInstance (new ResourceManager ())
 				   .As<IResourceManager> ();

@@ -4,10 +4,10 @@ namespace LiteHelper.History
 	public enum AnswerStatus
 	{
 		NoResponse = 0,
-		Accepted,
-		NotAccepted,
-		FalseCode,
-		Duplicate,
-		TimeIsOut
+		Accepted = 1,
+		NotAccepted = 2,
+		FalseCode = 3,
+		Duplicate = 4,
+		TimeIsOut = 5
 	}
 }

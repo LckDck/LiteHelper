@@ -1,9 +1,13 @@
-﻿using Xamarin.Forms;
+﻿using LiteHelper.Managers;
+using Microsoft.Practices.ServiceLocation;
+using Xamarin.Forms;
 
 namespace LiteHelper
 {
 	public partial class App : Application
 	{
+		CodeStorageManager _codeStorageManager;
+
 		//Россия, Украина, Молдавия, Казахстан, Литва, Эстония
 
 		public App ()
@@ -11,8 +15,8 @@ namespace LiteHelper
 			InitializeComponent ();
 
 			MainPage = new MainMasterDetailPage ();
-
-
+			_codeStorageManager = ServiceLocator.Current.GetInstance<CodeStorageManager> ();
+			_codeStorageManager.Init ();
 		}
 
 		protected override void OnStart ()
@@ -26,7 +30,7 @@ namespace LiteHelper
 			if (page != null) {
 				page.SaveEverything ();
 			}
-
+			_codeStorageManager.SaveAll ();
 		}
 
 		protected override void OnResume ()

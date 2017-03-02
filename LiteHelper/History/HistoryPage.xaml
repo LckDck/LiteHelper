@@ -32,17 +32,14 @@
 				        	<ColumnDefinition Width="*"/>
 				        	<ColumnDefinition Width="*"/>
 				        </Grid.ColumnDefinitions>
-				        <Grid.RowDefinitions>
-				        	<RowDefinition Height="*"/>
-				        	<RowDefinition Height="Auto"/>
-				        </Grid.RowDefinitions>
 							
-				       <Label Grid.Column="0" Grid.Row="0" FontAttributes="Bold" FontSize="18" TextColor="#F07810" VerticalOptions="Center" Text="{Binding Code}" HorizontalTextAlignment="Start"/>
-				       <Label Grid.Column="0" Grid.Row="1" FontSize="14" TextColor="Black" VerticalOptions="Center" Text="{Binding StatusText}" HorizontalTextAlignment="Start"/>
+				       <Label Grid.Row="0" FontAttributes="Bold" FontSize="18" TextColor="#F07810" VerticalOptions="Center" Text="{Binding Code}" HorizontalTextAlignment="Start"/>
+				       <Label Grid.Row="1" FontSize="14" TextColor="Black" VerticalOptions="Center" Text="{Binding StatusText}" HorizontalTextAlignment="Start"/>
 
-						<Button Grid.Column="1" Grid.RowSpan="2" Margin="0,8,0,8" IsVisible="{Binding ResendVisible}" BackgroundColor="#F07810" TextColor="Black" VerticalOptions="Center" HorizontalOptions="End" Text="Еще раз" Command="{Binding ResendCommand}"/>
 					</Grid>
                   </ViewCell>
+
+					
                 </DataTemplate>
             </ListView.ItemTemplate>
 		</ListView>

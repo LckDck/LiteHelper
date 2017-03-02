@@ -38,5 +38,17 @@ namespace LiteHelper.Droid.InterfaceImplementation
 			return Preferences.GetString (key, string.Empty);
 		}
 
+		public void Delete (string key)
+		{
+			if (!Preferences.Contains (key)) {
+				return;
+			}
+
+			using (var editor = Preferences.Edit ()) {
+				editor.Remove (key);
+				editor.Commit ();
+			}
+		}
+
 	}
 }

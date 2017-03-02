@@ -1,29 +1,37 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Windows.Input;
 using Foundation.Commands;
 using Foundation.MVVM.ViewModels;
+using LiteHelper.Managers;
+using Microsoft.Practices.ServiceLocation;
 using Xamarin.Forms;
 
 namespace LiteHelper.History
 {
 	public class HistoryViewModel : ViewModelBase
 	{
+		CodeStorageManager _codeStorageManager;
 		public HistoryViewModel ()
 		{
-			HistoryList = new List<HistoryItem> {
-				new HistoryItem { Code = "123drl123", Status = AnswerStatus.Accepted},
-				new HistoryItem { Code = "123dl2l3", Status = AnswerStatus.NoResponse },
-				new HistoryItem { Code = "123d123rl", Status = AnswerStatus.NotAccepted },
-				new HistoryItem { Code = "123drl234242", Status = AnswerStatus.Accepted},
-				new HistoryItem { Code = "123dr2984383l", Status = AnswerStatus.Accepted},
-				new HistoryItem { Code = "123drl1246", Status = AnswerStatus.Accepted},
-				new HistoryItem { Code = "123drl123023", Status = AnswerStatus.Accepted},
-			};
+			_codeStorageManager = ServiceLocator.Current.GetInstance<CodeStorageManager> ();
+			_historyList = new ObservableCollection<HistoryItem> ();
+			foreach (var item in _codeStorageManager.Codes) {
+				_historyList.Add (new HistoryItem { Code = item.Code, Status = item.Status });
+			}
 		}
 
-		public List<HistoryItem> HistoryList { get; set;}
+		ObservableCollection<HistoryItem> _historyList;
+		public ObservableCollection<HistoryItem> HistoryList { 
+			get { 
+				return _historyList; 
+			} 
+			set { 
+				_historyList = value; 
+			} 
+		}
 
 
 		ICommand _closeCommand;
@@ -39,9 +47,19 @@ namespace LiteHelper.History
 		public ICommand DeleteCommand {
 			get {
 				return _deleteCommand ?? (_deleteCommand = new DelegateCommand ((obj) => {
-					Application.Current.MainPage.Navigation.PopModalAsync ();
+					_codeStorageManager.Clear ();
+					Refresh ();
 				}));
 			}
 		}
-	}
+
+		void Refresh ()
+		{
+			HistoryList.Clear ();
+			foreach (var item in _codeStorageManager.Codes) {
+				HistoryList.Add (new HistoryItem { Code = item.Code, Status = item.Status });
+			}
+		}
+
+}
 }
