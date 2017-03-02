@@ -126,5 +126,18 @@ namespace LiteHelper
 		public static string AppDisplayName = "Dozor Lite Helper";
 
 		public static string SupportEmail = "cuckooshka.kgd@gmail.com";
+
+
+
+		internal static string GetHtmlUrl (string cityCode, string pin)
+		{
+			return $"http://lite.dzzzr.ru/{cityCode}/go/?pin={pin}";
+		}
+
+
+		internal static string GetSendCodeUrl (string cityCode, string pin)
+		{
+			return $"http://lite.dzzzr.ru/{cityCode}/go/?pin={pin}";
+		}
 	}
 }

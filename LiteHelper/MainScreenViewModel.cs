@@ -2,13 +2,21 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
+using System.Net;
 using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Text;
+using System.Threading.Tasks;
 using System.Windows.Input;
 using Foundation.Commands;
 using Foundation.MVVM.ViewModels;
 using LiteHelper.History;
 using LiteHelper.Managers;
 using Microsoft.Practices.ServiceLocation;
+using ModernHttpClient;
+using Newtonsoft.Json;
 using Xamarin.Forms;
 
 namespace LiteHelper
@@ -54,7 +62,7 @@ namespace LiteHelper
 			IsLoading = true;
 			Source = null;
 			var httpClient = new HttpClient ();
-			var html = await httpClient.GetStringAsync ($"http://lite.dzzzr.ru/{CityCode}/go/?pin={PIN}");
+			var html = await httpClient.GetStringAsync (Constants.GetHtmlUrl(CityCode, PIN));
 			System.Diagnostics.Debug.WriteLine (html);
 			Source = new HtmlWebViewSource { Html = html};
 			IsLoading = false;
@@ -101,15 +109,64 @@ namespace LiteHelper
 		ICommand _sendCommand;
 		public ICommand SendCommand {
 			get {
-				return _sendCommand ?? (_sendCommand = new DelegateCommand ((obj) => {
+				return _sendCommand ?? (_sendCommand = new DelegateCommand (async (obj) => {
 					if (!String.IsNullOrEmpty (Code)) {
 						_codeStorageManager.AddCode (Code, AnswerStatus.NoResponse);
+						IsLoading = true;
+						var result = await SendCode ();
+
+						Code = string.Empty;
+						Refresh ();
 					}
-					Code = string.Empty;
-					Refresh ();
+
 				}));
 			}
 		}
+
+
+		async Task<CodeResponse> SendCode ()
+		{
+			var client = GetClient ();
+			var parameters = new Dictionary<string, object> ();
+			parameters.Add ("code", Code);
+			using (var message = new HttpRequestMessage (
+				HttpMethod.Post,
+				Constants.GetSendCodeUrl (CityCode, PIN)) {
+				Content = GetJsonContent (parameters)
+			})
+			using (var response = await client.SendAsync (message)) {
+				var body = await response.Content.ReadAsStringAsync ();
+				Debug.WriteLine (body);
+				//var deserialized = JsonConvert.DeserializeObject<CodeResponse> (body);
+				var deserialized = new CodeResponse ();
+				return deserialized;
+			}
+		}
+
+		NativeMessageHandler _requestHandler;
+		private HttpClient GetClient ()
+		{
+			_requestHandler = new NativeMessageHandler ();
+			var client = new HttpClient (_requestHandler) {
+				Timeout = new TimeSpan (0, 1, 0)
+			};
+
+			//client.BaseAddress = new Uri (Constants.GetHtmlUrl(CityCode, PIN));
+
+			client.DefaultRequestHeaders.Accept.Clear ();
+			client.DefaultRequestHeaders.Accept.Add (new MediaTypeWithQualityHeaderValue ("application/json"));
+
+			return client;
+		}
+
+		private StringContent GetJsonContent (Dictionary<string, object> parameters)
+		{
+			var body = JsonConvert.SerializeObject (parameters);
+			return new StringContent (body, Encoding.UTF8, "application/json");
+		}
+
+
+
 
 
 		ICommand _refreshCommand;
