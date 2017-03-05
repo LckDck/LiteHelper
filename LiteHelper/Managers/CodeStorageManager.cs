@@ -33,7 +33,7 @@ namespace LiteHelper.Managers
 			}
 		}
 
-		public void AddCode (string key, AnswerStatus status) {
+		public void AddCode (string key, string status) {
 			var existed = _codes.Find (item => item.Code == key);
 			if (existed != null) {
 				existed.LastEditTime = GetTime ();

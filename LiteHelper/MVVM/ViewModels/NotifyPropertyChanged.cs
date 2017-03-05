@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq.Expressions;
 
 namespace Foundation.MVVM.ViewModels
@@ -38,6 +39,7 @@ namespace Foundation.MVVM.ViewModels
 				} 
 				catch (Exception e) 
 				{
+					Debug.WriteLine (e.Message);
 				}
                 
             }

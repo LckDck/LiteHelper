@@ -50,5 +50,9 @@ namespace LiteHelper.Droid.InterfaceImplementation
 			}
 		}
 
+		public bool RetrieveBool (string key)
+		{
+			return Preferences.GetBoolean (key, false);
+		}
 	}
 }

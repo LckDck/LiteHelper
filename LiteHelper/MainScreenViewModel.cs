@@ -8,6 +8,7 @@ using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Foundation.Commands;
@@ -57,14 +58,24 @@ namespace LiteHelper
 			Load ();
 		}
 
-		async void Load ()
+		async void Load (string html = null)
 		{
 			IsLoading = true;
 			Source = null;
-			var httpClient = new HttpClient ();
-			var html = await httpClient.GetStringAsync (Constants.GetHtmlUrl(CityCode, PIN));
-			System.Diagnostics.Debug.WriteLine (html);
-			Source = new HtmlWebViewSource { Html = html};
+
+			if (html == null) {
+				using (var httpClient = new HttpClient ()) {
+					try {
+						html = await httpClient.GetStringAsync (Constants.GetHtmlUrl (CityCode, PIN));
+					} catch (Exception e) {
+						Debug.WriteLine (e.Message);
+						html = "Нет сети";
+					}
+					StatusText = string.Empty;
+				}
+			}
+			Source = Constants.GetHtmlUrl (CityCode ,PIN);
+			UpdateCodesInfo (html);
 			IsLoading = false;
 		}
 
@@ -93,8 +104,8 @@ namespace LiteHelper
 			}
 		}
 
-		HtmlWebViewSource _source;
-		public HtmlWebViewSource Source {
+		string _source;
+		public string Source {
 			get {
 				return _source;
 			}
@@ -111,12 +122,11 @@ namespace LiteHelper
 			get {
 				return _sendCommand ?? (_sendCommand = new DelegateCommand (async (obj) => {
 					if (!String.IsNullOrEmpty (Code)) {
-						_codeStorageManager.AddCode (Code, AnswerStatus.NoResponse);
+						_codeStorageManager.AddCode (Code, "Отправляется...");
 						IsLoading = true;
 						var result = await SendCode ();
-
 						Code = string.Empty;
-						Refresh ();
+						Refresh (result);
 					}
 
 				}));
@@ -124,23 +134,75 @@ namespace LiteHelper
 		}
 
 
-		async Task<CodeResponse> SendCode ()
+		async Task<string> SendCode ()
 		{
 			var client = GetClient ();
-			var parameters = new Dictionary<string, object> ();
-			parameters.Add ("code", Code);
+			var code = Code;
 			using (var message = new HttpRequestMessage (
 				HttpMethod.Post,
 				Constants.GetSendCodeUrl (CityCode, PIN)) {
-				Content = GetJsonContent (parameters)
+				Content = new StringContent ($"pin={PIN}&cod={code}&action=entcod", Encoding.UTF8, "application/x-www-form-urlencoded")
+
 			})
-			using (var response = await client.SendAsync (message)) {
-				var body = await response.Content.ReadAsStringAsync ();
-				Debug.WriteLine (body);
-				//var deserialized = JsonConvert.DeserializeObject<CodeResponse> (body);
-				var deserialized = new CodeResponse ();
-				return deserialized;
+			try {
+				using (var response = await client.SendAsync (message)) {
+					var body = await response.Content.ReadAsStringAsync ();
+					GetStatusFor (code, body);
+					UpdateCodesInfo (body);
+					StatusText = GetStatusFor (code, body);
+					Debug.WriteLine (body);
+					return body;
+				}
+			} catch (Exception e) {
+				Debug.WriteLine (e.Message);
+				return "Нет сети";
 			}
+		}
+
+		void UpdateCodesInfo (string html)
+		{
+			_codesInfo = GetCodesInfoHtml (html);
+			RaisePropertyChanged (() => CodesInfo);
+		}
+
+		string GetCodesInfoHtml (string body)
+		{
+			var prefix = "<html>" +
+				"<head></head>"
+				+ "<body>"
+				+ "<span style='font-size:13px;'>";
+			var postfix = 
+				"</span>" +
+				"</body>" +
+				"</html>";
+
+			var regex = new Regex ("(?<=<div class='dcodes'><strong>Коды сложности</strong><br>)(.*?)(?=</p></div>)");
+
+			var match = regex.Match (body);
+			if (match.Success) {
+				var substring = match.Value;
+				return prefix + substring + postfix;
+			}
+
+			return prefix + "Нет информации о кодах" + postfix;
+		}
+
+		string GetStatusFor (string code, string html)
+		{
+			var errorBegin = "<!--errorText--><p><strong>";
+			var errorEnd = "</strong></p><!--errorTextEnd-->";
+			var indexBegin = html.IndexOf (errorBegin);
+			var indexEnd = html.IndexOf (errorEnd);
+			if (indexEnd > -1 && indexBegin > -1) {
+				var statusBeginIndex = indexBegin + errorBegin.Length;
+				var length = indexEnd - statusBeginIndex;
+				if (length > 0) {
+					var status = html.Substring (statusBeginIndex, length);
+						_codeStorageManager.AddCode (Code, status);
+					return status;
+				}
+			}
+			return "Код не принят. Движок неактивен";
 		}
 
 		NativeMessageHandler _requestHandler;
@@ -150,23 +212,11 @@ namespace LiteHelper
 			var client = new HttpClient (_requestHandler) {
 				Timeout = new TimeSpan (0, 1, 0)
 			};
-
-			//client.BaseAddress = new Uri (Constants.GetHtmlUrl(CityCode, PIN));
-
 			client.DefaultRequestHeaders.Accept.Clear ();
-			client.DefaultRequestHeaders.Accept.Add (new MediaTypeWithQualityHeaderValue ("application/json"));
+			client.DefaultRequestHeaders.Accept.Add (new MediaTypeWithQualityHeaderValue ("application/x-www-form-urlencoded"));
 
 			return client;
 		}
-
-		private StringContent GetJsonContent (Dictionary<string, object> parameters)
-		{
-			var body = JsonConvert.SerializeObject (parameters);
-			return new StringContent (body, Encoding.UTF8, "application/json");
-		}
-
-
-
 
 
 		ICommand _refreshCommand;
@@ -178,9 +228,9 @@ namespace LiteHelper
 
 
 
-		void Refresh (object obj = null)
+		void Refresh (object page = null)
 		{
-			Load ();
+			Load ((string)page);
 		}
 
 		ICommand _showMenuCommand;
@@ -214,6 +264,26 @@ namespace LiteHelper
 		}
 
 
+
+
+		string _statusText;
+		public string StatusText {
+			get {
+				return _statusText;
+			}
+
+			set {
+				_statusText = value;
+				RaisePropertyChanged (() => StatusText);
+				RaisePropertyChanged (() => StatusVisible);
+			}
+		}
+
+		public bool StatusVisible { 
+			get {
+				return !string.IsNullOrEmpty (StatusText);
+			}
+		}
 
 
 		string _code;
@@ -528,6 +598,45 @@ namespace LiteHelper
 		}
 
 
+		bool? _doVibro;
+		public bool DoVibro { 
+			get {
+				if(_doVibro.HasValue) {
+					return _doVibro.Value;
+				}
+				Utils.DoVibro = _storage.RetrieveBool (Constants.DoVibro);
+				_doVibro = Utils.DoVibro;
+				return _doVibro.Value;
+			}
 
+			set {
+				_doVibro = value;
+				Utils.DoVibro = value;
+				_storage.Store (Constants.DoVibro, _doVibro);
+				RaisePropertyChanged (() => DoVibro);
+			}
+		}
+
+
+		ICommand _changeVibrateCommand;
+		public ICommand ChangeVibrateCommand {
+			get {
+				return _changeVibrateCommand ?? (_changeVibrateCommand = new DelegateCommand ((obj) => {
+					DoVibro = !DoVibro;
+				}));
+			}
+		}
+
+
+		string _codesInfo;
+		public HtmlWebViewSource CodesInfo { 
+			get {
+				return new HtmlWebViewSource { Html = _codesInfo };
+			}
+		}
+
+
+		private string DebugBody = "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\">\n\n<html>\n<head>\n\t<META http-equiv=\"Content-Type\" Content=\"text/html; charset=windows-1251\">\n\t\t<meta http-equiv=\"Cache-Control\" content=\"max-age=0\" />\n\t<script src=\"timer.js\" type=\"text/javascript\"></script>\n\t<title>DozoR.Lite / Тестовая игра</title>\n\n\n<style>\nbody {\n\n\n\n\n}\n\n\n\n\n\n</style>\n\n</head>\n\n<body>\n\n\n\n<!--errorText--><p><strong>Код не принят.</strong></p><!--errorTextEnd--><p>Обновлено в 23:31:35<br /></p><!--contentBegin-->\n\t\n<!--gameType Through-->\n\n\n<p><strong>Задание <!--levelNumberBegin-->1<!--levelNumberEnd-->.  <!--bMin-->0<!--bMinE--> мин. (получено <!--bTime-->20:45:00<!--bTimeEnd-->):</strong><!--levelTextBegin--><p dir=\"ltr\">Экстрасенсам дано видеть намного больше обычного человека, зачастую у них в сознании вырисовываются странные картины. Вот одна из них:</p>\n<p dir=\"ltr\">Справа замок, слева круглое озеро, от замка до озера и вокруг него идет дорожка.</p><div class=spoiler><strong>Примечания к заданию</strong>: <!--taskNotes--><p dir=\"ltr\">Введите ответ в поле спойлера для получения проверочного кода и дальнейших указаний. Формат ответа: СЛОВО. &nbsp;На локации 13 кодов, для закрытия уровня достаточно ввести любые 10, включая проверочный. На уровне - бонусный код (1 минута), доступен до ввода основных кодов, код стандартный. Время на уровне увеличено.</p>\n<p dir=\"ltr\">P.S.: Не забудьте сдать агентам выданные на брифинге анкеты игроков (заявки)!&nbsp;</p><!--taskNotesEnd--></div><br/><!--levelTextEnd--><div style='font-size:120%;'><div class=spoiler><div class=title style='padding-left:0'>Спойлер</div><p dir=\"ltr\">Проверочный код: 157D15RL227</p>\n<p>На локации вас встретят агенты - выполняйте указания:</p>\n<p><img src=\"../../uploaded/kaliningrad/Lite/157DRL/BY_eUJIJoOk.jpg\" alt=\"\" width=\"450\" height=\"400\" /></p></div></div><!--bonusCodeCount 1--><!--mainCodeCount 14--><!--difficultyCods null,2,2,1+,1+,1+,1+,1+,1+,1+,1+,1+,1+,1+,1+--><div class='dcodes'><strong>Коды сложности</strong><br>основные коды: <span style='color:red'>null</span>, 2, 2, 1+, 1+, 1+, 1+, 1+, <span style='color:red'>1+</span>, <span style='color:red'>1+</span>, 1+, <span style='color:red'>1+</span>, <span style='color:red'>1+</span>, <span style='color:red'>1+</span><br>бонусные коды: 1+<br> (Всего - 14 , для прохождения достаточно любых 10 , принято - 7) <br/><strong>Бонусные коды</strong>: код сложности 1+ (1  мин.)<br /></p></div><p>Найденные коды: основные коды: 157D15RL227, 157DR131L, 157D1R47L4, 157DRL123456789123456789, 157DR1842L51, 157D13R5L7, 157DRL18265</p><p><strong>Подсказка l:</strong><br/><!--LevelClue1Text--><p><img src=\"../../uploaded/kaliningrad/Lite/157DRL/vghnmhjmnhyt.png\" alt=\"\" width=\"460\" height=\"260\" /></p><!--LevelClue1TextEnd--></p><p><strong>Подсказка 2:</strong><br/><!--LevelClue2Text--><p>Пароль к спойлеру: КЛЮЧ</p><!--LevelClue2TextEnd--></p><p>Введите код</p>\t<form  data-ajax=\"false\" method=post>\n   \t\t<input type=hidden name=\"nomessage\" value=\"\">\n\t\t<input type=hidden name=action value=entcod>\n\t\t<input type=hidden name=pin value=485315>\n\t\t<input type=hidden name=lev value=0>\n\t\t<input type=text id=\"levelCodeInput\" placeholder=\"код к заданию\" name=cod size=25 value=\"\"><br>\n\t\t\t\t<input id=\"sendCode\" type=submit value=\"отправить код\">\n\t</form>\n\t\n<!--contentEnd-->Время на уровне: <span id=clock2></span><br>\n\tВремя до окончания задания: <span id=clock>&nbsp;</span> \n\t    <script>\n    window.setTimeout('countDown(4406,9995)',1000); \n    </script>\n\t<!--timeOnLevelBegin 9995 timeOnLevelEnd-->\n\t<!--timeToFinishBegin 4406 timeToFinishEnd-->\n\t<!--LastLog--><div class=title>Последние три события игры</div><table cellpadding=3 cellspacing=0 border=1><tr><th>время</th><th>событие</th><th>данные</th></tr><tr bgcolor=><td nowrap>23:31:32</td><td>передан неверный код</td><td>159DRL&nbsp;</td></tr><tr bgcolor=><td nowrap>23:31:03</td><td>принят код</td><td>157DRL18265&nbsp;</td></tr><tr bgcolor=><td nowrap>23:30:53</td><td>принят код</td><td>157D13R5L7&nbsp;</td></tr></table><!--LastLogEnd--><br>\n\t\t<form method=get data-ajax=\"false\">\n   \t\t<input type=hidden name=\"pin\" value=\"485315\">\n   \t\t<input type=hidden  name=\"q\" value=\"44272283OKOFGTAI\"/>\n   \t\t<input type=hidden  name=\"zone\" value=\"\"/>\n   \t\t<input type=hidden  name=\"nomessage\" value=\"\"/>\n\t\t<input type=submit value=\"обновить страницу\">\n\t\t</form>\n\t\t<form method=get name=refr data-ajax=\"false\">\n   \t\t<input type=hidden name=\"pin\" value=\"485315\">\n   \t\t<input type=hidden  name=\"q\" value=\"44272283OKOFGTAI\"/>\n   \t\t<input type=hidden  name=\"nomessage\" value=\"\"/>\n\t\t<input type=submit value=\"обновлять автоматически через\"> <input type=text name=refresh size=3 value=\"0\"> мин.\n\t\t</form>\n<p>Таймер браузера работает независимо от сервера! Используйте авто-обновление страницы для его синхронизации.\n<!--gameID248--><style>\n.teamstat td, .teamstat th  {\n\tfont-family : Arial;\n\tfont-size : 12px;\n}\n\n.teamstat table, .teamstat table td, .teamstat table th {\n  border: 1px solid gray;\n  border-collapse: collapse;\n}\n\n.teamstat table td, .teamstat table th {\n\tpadding : 2px 2px 2px 2px;\n}\n</style>\n<hr/><p><b>Общение с организатором</b><br/><form method=post>\n\t\t\t<input type=hidden name=action value=message>\n\t\t\t<input type=hidden name=gameData[id] value=248>\n\t\t\t<input type=hidden name=pin value=485315>\n\t\t\t<textarea name=content rows=5 cols=30></textarea><br>\n\t\t\t<input type=submit value='отправить сообщение'>\n\t\t</form><p>Команда: <strong>Pepperhouse</strong><!--<br>Игрок: <strong></strong>--><br>Игра: <strong>Тестовая игра. Начало в 2017-03-03 20:45:00. </strong><br>Организатор: <strong>Надежда Елисеева</strong>. ICQ: <strong>291-377-249</strong>. tel: <strong>+7(911)4820353</strong></p>\n\n\n\n</body>\n</html>";
+		private string DebugBodyNoError = "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\">\n\n<html>\n<head>\n\t<META http-equiv=\"Content-Type\" Content=\"text/html; charset=windows-1251\">\n\t\t<meta http-equiv=\"Cache-Control\" content=\"max-age=0\" />\n\t<script src=\"timer.js\" type=\"text/javascript\"></script>\n\t<title>DozoR.Lite / Тестовая игра</title>\n\n\n<style>\nbody {\n\n\n\n\n}\n\n\n\n\n\n</style>\n\n</head>\n\n<body>\n\n\n\n<!--errorText--><p><!--errorTextEnd--><p>Обновлено в 23:31:35<br /></p><!--contentBegin-->\n\t\n<!--gameType Through-->\n\n\n<p><strong>Задание <!--levelNumberBegin-->1<!--levelNumberEnd-->.  <!--bMin-->0<!--bMinE--> мин. (получено <!--bTime-->20:45:00<!--bTimeEnd-->):</strong><!--levelTextBegin--><p dir=\"ltr\">Экстрасенсам дано видеть намного больше обычного человека, зачастую у них в сознании вырисовываются странные картины. Вот одна из них:</p>\n<p dir=\"ltr\">Справа замок, слева круглое озеро, от замка до озера и вокруг него идет дорожка.</p><div class=spoiler><strong>Примечания к заданию</strong>: <!--taskNotes--><p dir=\"ltr\">Введите ответ в поле спойлера для получения проверочного кода и дальнейших указаний. Формат ответа: СЛОВО. &nbsp;На локации 13 кодов, для закрытия уровня достаточно ввести любые 10, включая проверочный. На уровне - бонусный код (1 минута), доступен до ввода основных кодов, код стандартный. Время на уровне увеличено.</p>\n<p dir=\"ltr\">P.S.: Не забудьте сдать агентам выданные на брифинге анкеты игроков (заявки)!&nbsp;</p><!--taskNotesEnd--></div><br/><!--levelTextEnd--><div style='font-size:120%;'><div class=spoiler><div class=title style='padding-left:0'>Спойлер</div><p dir=\"ltr\">Проверочный код: 157D15RL227</p>\n<p>На локации вас встретят агенты - выполняйте указания:</p>\n<p><img src=\"../../uploaded/kaliningrad/Lite/157DRL/BY_eUJIJoOk.jpg\" alt=\"\" width=\"450\" height=\"400\" /></p></div></div><!--bonusCodeCount 1--><!--mainCodeCount 14--><!--difficultyCods null,2,2,1+,1+,1+,1+,1+,1+,1+,1+,1+,1+,1+,1+--><div class='dcodes'><strong>Коды сложности</strong><br>основные коды: <span style='color:red'>null</span>, 2, 2, 1+, 1+, 1+, 1+, 1+, <span style='color:red'>1+</span>, <span style='color:red'>1+</span>, 1+, <span style='color:red'>1+</span>, <span style='color:red'>1+</span>, <span style='color:red'>1+</span><br>бонусные коды: 1+<br> (Всего - 14 , для прохождения достаточно любых 10 , принято - 7) <br/><strong>Бонусные коды</strong>: код сложности 1+ (1  мин.)<br /></p></div><p>Найденные коды: основные коды: 157D15RL227, 157DR131L, 157D1R47L4, 157DRL123456789123456789, 157DR1842L51, 157D13R5L7, 157DRL18265</p><p><strong>Подсказка l:</strong><br/><!--LevelClue1Text--><p><img src=\"../../uploaded/kaliningrad/Lite/157DRL/vghnmhjmnhyt.png\" alt=\"\" width=\"460\" height=\"260\" /></p><!--LevelClue1TextEnd--></p><p><strong>Подсказка 2:</strong><br/><!--LevelClue2Text--><p>Пароль к спойлеру: КЛЮЧ</p><!--LevelClue2TextEnd--></p><p>Введите код</p>\t<form  data-ajax=\"false\" method=post>\n   \t\t<input type=hidden name=\"nomessage\" value=\"\">\n\t\t<input type=hidden name=action value=entcod>\n\t\t<input type=hidden name=pin value=485315>\n\t\t<input type=hidden name=lev value=0>\n\t\t<input type=text id=\"levelCodeInput\" placeholder=\"код к заданию\" name=cod size=25 value=\"\"><br>\n\t\t\t\t<input id=\"sendCode\" type=submit value=\"отправить код\">\n\t</form>\n\t\n<!--contentEnd-->Время на уровне: <span id=clock2></span><br>\n\tВремя до окончания задания: <span id=clock>&nbsp;</span> \n\t    <script>\n    window.setTimeout('countDown(4406,9995)',1000); \n    </script>\n\t<!--timeOnLevelBegin 9995 timeOnLevelEnd-->\n\t<!--timeToFinishBegin 4406 timeToFinishEnd-->\n\t<!--LastLog--><div class=title>Последние три события игры</div><table cellpadding=3 cellspacing=0 border=1><tr><th>время</th><th>событие</th><th>данные</th></tr><tr bgcolor=><td nowrap>23:31:32</td><td>передан неверный код</td><td>159DRL&nbsp;</td></tr><tr bgcolor=><td nowrap>23:31:03</td><td>принят код</td><td>157DRL18265&nbsp;</td></tr><tr bgcolor=><td nowrap>23:30:53</td><td>принят код</td><td>157D13R5L7&nbsp;</td></tr></table><!--LastLogEnd--><br>\n\t\t<form method=get data-ajax=\"false\">\n   \t\t<input type=hidden name=\"pin\" value=\"485315\">\n   \t\t<input type=hidden  name=\"q\" value=\"44272283OKOFGTAI\"/>\n   \t\t<input type=hidden  name=\"zone\" value=\"\"/>\n   \t\t<input type=hidden  name=\"nomessage\" value=\"\"/>\n\t\t<input type=submit value=\"обновить страницу\">\n\t\t</form>\n\t\t<form method=get name=refr data-ajax=\"false\">\n   \t\t<input type=hidden name=\"pin\" value=\"485315\">\n   \t\t<input type=hidden  name=\"q\" value=\"44272283OKOFGTAI\"/>\n   \t\t<input type=hidden  name=\"nomessage\" value=\"\"/>\n\t\t<input type=submit value=\"обновлять автоматически через\"> <input type=text name=refresh size=3 value=\"0\"> мин.\n\t\t</form>\n<p>Таймер браузера работает независимо от сервера! Используйте авто-обновление страницы для его синхронизации.\n<!--gameID248--><style>\n.teamstat td, .teamstat th  {\n\tfont-family : Arial;\n\tfont-size : 12px;\n}\n\n.teamstat table, .teamstat table td, .teamstat table th {\n  border: 1px solid gray;\n  border-collapse: collapse;\n}\n\n.teamstat table td, .teamstat table th {\n\tpadding : 2px 2px 2px 2px;\n}\n</style>\n<hr/><p><b>Общение с организатором</b><br/><form method=post>\n\t\t\t<input type=hidden name=action value=message>\n\t\t\t<input type=hidden name=gameData[id] value=248>\n\t\t\t<input type=hidden name=pin value=485315>\n\t\t\t<textarea name=content rows=5 cols=30></textarea><br>\n\t\t\t<input type=submit value='отправить сообщение'>\n\t\t</form><p>Команда: <strong>Pepperhouse</strong><!--<br>Игрок: <strong></strong>--><br>Игра: <strong>Тестовая игра. Начало в 2017-03-03 20:45:00. </strong><br>Организатор: <strong>Надежда Елисеева</strong>. ICQ: <strong>291-377-249</strong>. tel: <strong>+7(911)4820353</strong></p>\n\n\n\n</body>\n</html>";
 	}
 }

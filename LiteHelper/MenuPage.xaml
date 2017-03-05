@@ -1,18 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ContentPage BackgroundColor="White" xmlns="http://xamarin.com/schemas/2014/forms" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" xmlns:local="clr-namespace:LiteHelper" x:Class="LiteHelper.MenuPage">
+<ContentPage BackgroundColor="White" 
+		xmlns:controls="clr-namespace:LiteHelper.Controls"
+		xmlns="http://xamarin.com/schemas/2014/forms" 
+		xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" 
+		xmlns:local="clr-namespace:LiteHelper" x:Class="LiteHelper.MenuPage">
 	<Grid RowSpacing="4">
 		<Grid.RowDefinitions>
 			<RowDefinition Height="22"/>
 			<RowDefinition Height="40"/>
 			<RowDefinition Height="40"/>
-			<RowDefinition Height="40"/>
-			<RowDefinition Height="40"/>
-			<RowDefinition Height="40"/>
-			<RowDefinition Height="40"/>
-			<RowDefinition Height="40"/>
-			<RowDefinition Height="54"/>
+
 			<RowDefinition Height="*"/>
-			<RowDefinition Height="54"/>
+			
+			<RowDefinition Height="Auto"/>
+			<RowDefinition Height="Auto"/>
 		</Grid.RowDefinitions>
 		<BoxView BackgroundColor="Black" Grid.RowSpan="3"/>
 		<Label TextColor="#F07810" Text="PIN" Grid.Row="1" HorizontalTextAlignment="Start" HorizontalOptions="Start" Margin="10,0,10,0" VerticalOptions="Center"/>
@@ -21,38 +22,58 @@
 		<Label TextColor="#F07810" Text="Город" Grid.Row="2" HorizontalTextAlignment="Start" HorizontalOptions="Start" Margin="10,0,10,0" VerticalOptions="Center"/>
 		<Picker ItemsSource="{Binding Cities}" SelectedItem="{Binding SelectedCity, Mode=TwoWay}" SelectedIndex="{Binding SelectedCityIndex}" TextColor="#F07810" Grid.Row="2" HorizontalOptions="End" Margin="10,0,10,0"/>
 
+		<ScrollView Grid.Row="3"> 
+			<Grid>
+				<Grid.RowDefinitions>
+					<RowDefinition Height="40"/>
+					<RowDefinition Height="40"/>
+					<RowDefinition Height="40"/>
+					<RowDefinition Height="40"/>
+					<RowDefinition Height="40"/>
+					<RowDefinition Height="Auto"/>
+				</Grid.RowDefinitions>
+			
+			
+				<Label TextColor="Black" Text="Key 1" Grid.Row="0" HorizontalTextAlignment="Start" HorizontalOptions="Start" Margin="10,0,10,0" VerticalOptions="Center"/>
+				<Entry Text="{Binding Prefix1}" BackgroundColor="Transparent" FontAttributes="Bold" TextColor="#F07810" Grid.Row="0" HorizontalTextAlignment="End" Margin="10,0,10,0"/>
+
+				<Label TextColor="Black" Text="Key 2" Grid.Row="1" HorizontalTextAlignment="Start" HorizontalOptions="Start" Margin="10,0,10,0" VerticalOptions="Center"/>
+				<Entry Text="{Binding Prefix2}" BackgroundColor="Transparent" FontAttributes="Bold" TextColor="#F07810" Grid.Row="1" HorizontalTextAlignment="End" Margin="10,0,10,0"/>
+
+				<Label TextColor="Black" Text="Key 3" Grid.Row="2" HorizontalTextAlignment="Start" HorizontalOptions="Start" Margin="10,0,10,0" VerticalOptions="Center"/>
+				<Entry Text="{Binding Prefix3}" BackgroundColor="Transparent" FontAttributes="Bold" TextColor="#F07810" Grid.Row="2" HorizontalTextAlignment="End" Margin="10,0,10,0"/>
+
+				<Label TextColor="Black" Text="Key 4" Grid.Row="3" HorizontalTextAlignment="Start" HorizontalOptions="Start" Margin="10,0,10,0" VerticalOptions="Center"/>
+				<Entry Text="{Binding Prefix4}" BackgroundColor="Transparent" FontAttributes="Bold" TextColor="#F07810" Grid.Row="3" HorizontalTextAlignment="End" Margin="10,0,10,0"/>
+
+				<Label TextColor="Black" Text="Key 5" Grid.Row="4" HorizontalTextAlignment="Start" HorizontalOptions="Start" Margin="10,0,10,0" VerticalOptions="Center"/>
+				<Entry Text="{Binding Prefix5}" BackgroundColor="Transparent" FontAttributes="Bold" TextColor="#F07810" Grid.Row="4" HorizontalTextAlignment="End" Margin="10,0,10,0"/>
+
+				<Grid Margin="10,0,10,0" Grid.Row="5">
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="50"/>
+						<ColumnDefinition Width="*"/>
+					</Grid.ColumnDefinitions>
+
+					<Grid.RowDefinitions>
+						<RowDefinition Height="40"/>
+						<RowDefinition Height="40"/>
+					</Grid.RowDefinitions>
+
+					<Switch Grid.Row="0" Grid.Column="0" IsToggled="{Binding DoVibro}" VerticalOptions="Center" HorizontalOptions="Center"/>
+					<Label TextColor="Black" Grid.Row="0" Text="Вибрация клавиш" Grid.Column="1" HorizontalTextAlignment="Start" HorizontalOptions="Start" VerticalOptions="Center"/>
+					<Button Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" BackgroundColor="Transparent" Command="{Binding ChangeVibrateCommand}" />
+
+					<Image Source="mail.png" Grid.Row="1" Grid.Column="0" VerticalOptions="Center" HorizontalOptions="Center"/>
+					<Label TextColor="Black" Grid.Row="1" Text="Написать разработчику" Grid.Column="1" HorizontalTextAlignment="Start" HorizontalOptions="Start" VerticalOptions="Center"/>
+					<Button Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" BackgroundColor="Transparent" x:Name="ContactDeveloper" />
+
+					
+				</Grid>
+			</Grid>
+		</ScrollView>
 		
-		<Label TextColor="Black" Text="Key 1" Grid.Row="3" HorizontalTextAlignment="Start" HorizontalOptions="Start" Margin="10,0,10,0" VerticalOptions="Center"/>
-		<Entry Text="{Binding Prefix1}" BackgroundColor="Transparent" FontAttributes="Bold" TextColor="#F07810" Grid.Row="3" HorizontalTextAlignment="End" Margin="10,0,10,0"/>
-
-		<Label TextColor="Black" Text="Key 2" Grid.Row="4" HorizontalTextAlignment="Start" HorizontalOptions="Start" Margin="10,0,10,0" VerticalOptions="Center"/>
-		<Entry Text="{Binding Prefix2}" BackgroundColor="Transparent" FontAttributes="Bold" TextColor="#F07810" Grid.Row="4" HorizontalTextAlignment="End" Margin="10,0,10,0"/>
-
-		<Label TextColor="Black" Text="Key 3" Grid.Row="5" HorizontalTextAlignment="Start" HorizontalOptions="Start" Margin="10,0,10,0" VerticalOptions="Center"/>
-		<Entry Text="{Binding Prefix3}" BackgroundColor="Transparent" FontAttributes="Bold" TextColor="#F07810" Grid.Row="5" HorizontalTextAlignment="End" Margin="10,0,10,0"/>
-
-		<Label TextColor="Black" Text="Key 4" Grid.Row="6" HorizontalTextAlignment="Start" HorizontalOptions="Start" Margin="10,0,10,0" VerticalOptions="Center"/>
-		<Entry Text="{Binding Prefix4}" BackgroundColor="Transparent" FontAttributes="Bold" TextColor="#F07810" Grid.Row="6" HorizontalTextAlignment="End" Margin="10,0,10,0"/>
-
-		<Label TextColor="Black" Text="Key 5" Grid.Row="7" HorizontalTextAlignment="Start" HorizontalOptions="Start" Margin="10,0,10,0" VerticalOptions="Center"/>
-		<Entry Text="{Binding Prefix5}" BackgroundColor="Transparent" FontAttributes="Bold" TextColor="#F07810" Grid.Row="7" HorizontalTextAlignment="End" Margin="10,0,10,0"/>
-
-		<Grid Margin="10,0,10,0" Grid.Row="8">
-			<Grid.ColumnDefinitions>
-				<ColumnDefinition Width="Auto"/>
-				<ColumnDefinition Width="*"/>
-			</Grid.ColumnDefinitions>
-			<Grid.GestureRecognizers>
-				<TapGestureRecognizer x:Name="ContactRecognizer"/>
-			</Grid.GestureRecognizers>
-
-			<Image Source="mail.png" Grid.Column="0" VerticalOptions="Center" HorizontalOptions="Start"/>
-			<Label TextColor="Black" Text="Написать разработчику" Grid.Column="1" HorizontalTextAlignment="Start" HorizontalOptions="Start" VerticalOptions="Center"/>
-		
-		</Grid>
-		
-		
-		<Label TextColor="Black" Text="{Binding DonateText}" Grid.Row="9" FontSize="9" HorizontalTextAlignment="Start" HorizontalOptions="Start" Margin="10,0,10,0" VerticalOptions="End"/>
-		<Button TextColor="Black" Grid.Row="10" BackgroundColor="#F07810" Margin="5,5,5,5" Command="{Binding BuyCommand}" Text="Отключить рекламу"/>
+		<Label TextColor="Black" Text="{Binding DonateText}" Grid.Row="4" FontSize="9" HorizontalTextAlignment="Start" HorizontalOptions="Start" Margin="10,0,10,0" VerticalOptions="End"/>
+		<Button HeightRequest="44" TextColor="Black" Grid.Row="5" BackgroundColor="#F07810" Margin="5,5,5,5" Command="{Binding BuyCommand}" Text="Отключить рекламу"/>
 	</Grid>
 </ContentPage>

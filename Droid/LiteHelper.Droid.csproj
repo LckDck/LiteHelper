@@ -119,6 +119,8 @@
     <Compile Include="Renderers\ExtendedPickerRenderer.cs" />
     <Compile Include="Renderers\ZoomableWebViewRenderer.cs" />
     <Compile Include="InterfaceImplementation\ResourceManager.cs" />
+    <Compile Include="Renderers\HtmlLabelRenderer.cs" />
+    <Compile Include="Renderers\ExtendedWebViewRenderer.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\AboutResources.txt" />

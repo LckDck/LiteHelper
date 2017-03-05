@@ -11,5 +11,7 @@ namespace LiteHelper
 				return string.Empty;
 			return input.Substring(0, 1).ToUpper () + input.Substring (1);
 		}
+
+		public static bool DoVibro { get; set;}
 	}
 }

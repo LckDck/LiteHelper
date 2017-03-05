@@ -5,6 +5,7 @@ namespace LiteHelper
 	{
 		void Store (string key, object dataString);
 		string RetrieveString (string key);
+		bool RetrieveBool (string key);
 		void Delete (string key);
 	}
 }

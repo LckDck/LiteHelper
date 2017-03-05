@@ -28,13 +28,10 @@
                 <DataTemplate>
                 <ViewCell>
                    <Grid Padding="10,8,10,8" RowSpacing="2">
-			        	<Grid.ColumnDefinitions>
-				        	<ColumnDefinition Width="*"/>
-				        	<ColumnDefinition Width="*"/>
-				        </Grid.ColumnDefinitions>
+			   
 							
 				       <Label Grid.Row="0" FontAttributes="Bold" FontSize="18" TextColor="#F07810" VerticalOptions="Center" Text="{Binding Code}" HorizontalTextAlignment="Start"/>
-				       <Label Grid.Row="1" FontSize="14" TextColor="Black" VerticalOptions="Center" Text="{Binding StatusText}" HorizontalTextAlignment="Start"/>
+				       <Label Grid.Row="1" FontSize="14" TextColor="Black" VerticalOptions="Center" Text="{Binding StatusText}" HorizontalTextAlignment="Start" LineBreakMode="TailTruncation"/>
 
 					</Grid>
                   </ViewCell>

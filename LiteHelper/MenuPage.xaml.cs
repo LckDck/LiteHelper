@@ -12,6 +12,7 @@ namespace LiteHelper
 	public partial class MenuPage : ContentPage
 	{
 		IResourceManager _resoruceManager;
+
 		public MenuPage ()
 		{
 			InitializeComponent ();
@@ -26,13 +27,13 @@ namespace LiteHelper
 		protected override void OnAppearing ()
 		{
 			base.OnAppearing ();
-			ContactRecognizer.Tapped += OnTapped;
+			ContactDeveloper.Clicked += OnTapped;
 		}
 
 		protected override void OnDisappearing ()
 		{
 			base.OnDisappearing ();
-			ContactRecognizer.Tapped -= OnTapped;
+			ContactDeveloper.Clicked -= OnTapped;
 		}
 
 

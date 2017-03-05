@@ -20,10 +20,13 @@ namespace LiteHelper.Droid
 	[Activity (Label = "LiteHelper", Icon = "@drawable/icon", Theme = "@style/MyTheme", MainLauncher = true, ScreenOrientation = ScreenOrientation.Portrait, ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation)]
 	public class MainActivity : global::Xamarin.Forms.Platform.Android.FormsAppCompatActivity
 	{
+		public static MainActivity Current;
+		public Vibrator Vibrator;
 		protected override void OnCreate (Bundle bundle)
 		{
 			TabLayoutResource = Resource.Layout.Tabbar;
 			ToolbarResource = Resource.Layout.Toolbar;
+			Current = this;
 
 			base.OnCreate (bundle);
 
@@ -38,6 +41,8 @@ namespace LiteHelper.Droid
 			builder.RegisterInstance (new ResourceManager ())
 				   .As<IResourceManager> ();
 			var container = builder.Build ();
+
+			Vibrator = (Vibrator)GetSystemService (Context.VibratorService);
 
 			ServiceLocator.SetLocatorProvider (() => new AutofacServiceLocator (container));
 
