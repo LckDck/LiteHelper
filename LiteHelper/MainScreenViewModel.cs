@@ -147,9 +147,10 @@ namespace LiteHelper
 			try {
 				using (var response = await client.SendAsync (message)) {
 					var body = await response.Content.ReadAsStringAsync ();
-					GetStatusFor (code, body);
+					var status = GetStatusFor (code, body);
+					_codeStorageManager.AddCode (Code, status);
 					UpdateCodesInfo (body);
-					StatusText = GetStatusFor (code, body);
+					StatusText = status;
 					Debug.WriteLine (body);
 					return body;
 				}
@@ -198,11 +199,10 @@ namespace LiteHelper
 				var length = indexEnd - statusBeginIndex;
 				if (length > 0) {
 					var status = html.Substring (statusBeginIndex, length);
-						_codeStorageManager.AddCode (Code, status);
 					return status;
 				}
 			}
-			return "Код не принят. Движок неактивен";
+			return "Код не принят. Движок неактивен.";
 		}
 
 		NativeMessageHandler _requestHandler;
