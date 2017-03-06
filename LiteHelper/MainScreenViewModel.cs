@@ -247,6 +247,7 @@ namespace LiteHelper
 			get {
 				return _clearCommand ?? (_clearCommand = new DelegateCommand ((obj) => {
 					Code = String.Empty;
+					StatusText = String.Empty;
 				}));
 			}
 		}
