@@ -11,7 +11,7 @@
 	            </RowDefinition.Height>
 			</RowDefinition>
 			<RowDefinition Height="44"/>
-			<RowDefinition Height="Auto"/>
+			<RowDefinition Height="27"  x:Name="topRow"/>
 			<RowDefinition Height="Auto"/>
 			<RowDefinition Height="1"/>
 			<RowDefinition Height="*"/>
@@ -31,7 +31,7 @@
 			<Button Grid.Column="0" Image="menu.png" BackgroundColor="Transparent" VerticalOptions="Center" Command="{Binding ShowMenuCommand}"/> 	
 				
 		</Grid>
-		<Label Text="{Binding StatusText}" IsVisible="{Binding StatusVisible}" Margin="5,0,5,3" LineBreakMode="TailTruncation" Grid.Row="2" TextColor="White" FontAttributes="Bold" VerticalOptions="Center"/>
+		<Label Text="{Binding StatusText}" x:Name="StatusLabel" Margin="5,0,5,3" LineBreakMode="TailTruncation" Grid.Row="2" TextColor="White" FontAttributes="Bold" VerticalOptions="Center"/>
 		<Grid Grid.Row="3" BackgroundColor="White" RowSpacing="0" ColumnSpacing="0">
 			
 			<Grid.RowDefinitions>

@@ -12,17 +12,26 @@
 
 			<RowDefinition Height="*"/>
 			
+			<RowDefinition Height="40"/>
 			<RowDefinition Height="Auto"/>
 			<RowDefinition Height="Auto"/>
 		</Grid.RowDefinitions>
-		<BoxView BackgroundColor="Black" Grid.RowSpan="3"/>
-		<Label TextColor="#F07810" Text="PIN" Grid.Row="1" HorizontalTextAlignment="Start" HorizontalOptions="Start" Margin="10,0,10,0" VerticalOptions="Center"/>
-		<Entry Text="{Binding PIN}" TextColor="#F07810" FontAttributes="Bold" Grid.Row="1" HorizontalTextAlignment="End" Margin="10,0,10,0" Keyboard="Numeric"/>
 
-		<Label TextColor="#F07810" Text="Город" Grid.Row="2" HorizontalTextAlignment="Start" HorizontalOptions="Start" Margin="10,0,10,0" VerticalOptions="Center"/>
-		<Picker ItemsSource="{Binding Cities}" SelectedItem="{Binding SelectedCity, Mode=TwoWay}" SelectedIndex="{Binding SelectedCityIndex}" TextColor="#F07810" Grid.Row="2" HorizontalOptions="End" Margin="10,0,10,0"/>
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition Width="40"/>
+			<ColumnDefinition Width="*"/>
+		</Grid.ColumnDefinitions>
 
-		<ScrollView Grid.Row="3"> 
+
+		
+		<BoxView BackgroundColor="Black" Grid.RowSpan="3" Grid.ColumnSpan="2"/>
+		<Label TextColor="#F07810" Text="PIN" Grid.Row="1" Grid.ColumnSpan="2"  HorizontalTextAlignment="Start" HorizontalOptions="Start" Margin="10,0,10,0" VerticalOptions="Center"/>
+		<Entry Text="{Binding PIN}" TextColor="#F07810" Grid.ColumnSpan="2" FontAttributes="Bold" Grid.Row="1" HorizontalTextAlignment="End" Margin="10,0,10,0" Keyboard="Numeric"/>
+
+		<Label TextColor="#F07810" Text="Город" Grid.Row="2" Grid.ColumnSpan="2" HorizontalTextAlignment="Start" HorizontalOptions="Start" Margin="10,0,10,0" VerticalOptions="Center"/>
+		<Picker ItemsSource="{Binding Cities}" Grid.ColumnSpan="2" SelectedItem="{Binding SelectedCity, Mode=TwoWay}" SelectedIndex="{Binding SelectedCityIndex}" TextColor="#F07810" Grid.Row="2" HorizontalOptions="End" Margin="10,0,10,0"/>
+
+		<ScrollView Grid.Row="3" Grid.ColumnSpan="2"> 
 			<Grid>
 				<Grid.RowDefinitions>
 					<RowDefinition Height="40"/>
@@ -51,29 +60,30 @@
 
 				<Grid Margin="10,0,10,0" Grid.Row="5">
 					<Grid.ColumnDefinitions>
-						<ColumnDefinition Width="50"/>
 						<ColumnDefinition Width="*"/>
+						<ColumnDefinition Width="50"/>
 					</Grid.ColumnDefinitions>
 
 					<Grid.RowDefinitions>
 						<RowDefinition Height="40"/>
-						<RowDefinition Height="40"/>
 					</Grid.RowDefinitions>
 
-					<Switch Grid.Row="0" Grid.Column="0" IsToggled="{Binding DoVibro}" VerticalOptions="Center" HorizontalOptions="Center"/>
-					<Label TextColor="Black" Grid.Row="0" Text="Вибрация клавиш" Grid.Column="1" HorizontalTextAlignment="Start" HorizontalOptions="Start" VerticalOptions="Center"/>
+					<Switch Grid.Row="0" Grid.Column="1" IsToggled="{Binding DoVibro}" VerticalOptions="Center" HorizontalOptions="End"/>
+					<Label TextColor="Black" Grid.Row="0" Text="Вибрация клавиш" Grid.Column="0" HorizontalTextAlignment="Start" HorizontalOptions="Start" VerticalOptions="Center"/>
 					<Button Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" BackgroundColor="Transparent" Command="{Binding ChangeVibrateCommand}" />
-
-					<Image Source="mail.png" Grid.Row="1" Grid.Column="0" VerticalOptions="Center" HorizontalOptions="Center"/>
-					<Label TextColor="Black" Grid.Row="1" Text="Написать разработчику" Grid.Column="1" HorizontalTextAlignment="Start" HorizontalOptions="Start" VerticalOptions="Center"/>
-					<Button Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" BackgroundColor="Transparent" x:Name="ContactDeveloper" />
 
 					
 				</Grid>
 			</Grid>
 		</ScrollView>
+
+
+		<Image Source="mail.png" Grid.Row="4" Grid.Column="0" Margin="10,0,0,0" VerticalOptions="Center" HorizontalOptions="Start"/>
+		<Label TextColor="Black" Grid.Row="4" Text="Написать разработчику" Grid.Column="1" HorizontalTextAlignment="Start" HorizontalOptions="Start" VerticalOptions="Center"/>
+		<Button Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2" BackgroundColor="Transparent" x:Name="ContactDeveloper" />
+
 		
-		<Label TextColor="Black" Text="{Binding DonateText}" Grid.Row="4" FontSize="9" HorizontalTextAlignment="Start" HorizontalOptions="Start" Margin="10,0,10,0" VerticalOptions="End"/>
-		<Button HeightRequest="44" TextColor="Black" Grid.Row="5" BackgroundColor="#F07810" Margin="5,5,5,5" Command="{Binding BuyCommand}" Text="Отключить рекламу"/>
+		<Label TextColor="Black" Grid.ColumnSpan="2" Text="{Binding DonateText}" Grid.Row="5" FontSize="9" HorizontalTextAlignment="Start" HorizontalOptions="Start" Margin="10,0,10,0" VerticalOptions="End"/>
+		<Button HeightRequest="44" Grid.ColumnSpan="2" TextColor="Black" Grid.Row="6" BackgroundColor="#F07810" Margin="5,5,5,5" Command="{Binding BuyCommand}" Text="Отключить рекламу"/>
 	</Grid>
 </ContentPage>
