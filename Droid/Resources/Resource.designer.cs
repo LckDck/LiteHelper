@@ -28,6 +28,7 @@ namespace LiteHelper.Droid
 		{
 			global::Xamarin.Forms.Platform.Android.Resource.Attribute.actionBarSize = global::LiteHelper.Droid.Resource.Attribute.actionBarSize;
 			global::ModernHttpClient.Resource.String.library_name = global::LiteHelper.Droid.Resource.String.library_name;
+			global::Xamarin.InAppBilling.Resource.String.library_name = global::LiteHelper.Droid.Resource.String.library_name;
 		}
 		
 		public partial class Animation

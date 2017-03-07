@@ -102,6 +102,9 @@
     <Reference Include="Plugin.Connectivity">
       <HintPath>..\packages\Xam.Plugin.Connectivity.2.3.0\lib\MonoAndroid10\Plugin.Connectivity.dll</HintPath>
     </Reference>
+    <Reference Include="Xamarin.InAppBilling">
+      <HintPath>..\Components\xamarin.inappbilling-2.2\lib\android\Xamarin.InAppBilling.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\LiteHelper\LiteHelper.csproj">
@@ -120,6 +123,8 @@
     <Compile Include="Renderers\ZoomableWebViewRenderer.cs" />
     <Compile Include="InterfaceImplementation\ResourceManager.cs" />
     <Compile Include="Renderers\ExtendedWebViewRenderer.cs" />
+    <Compile Include="InterfaceImplementation\InAppPurchase.cs" />
+    <Compile Include="InterfaceImplementation\TimerInstance.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\AboutResources.txt" />
@@ -182,6 +187,12 @@
     <Folder Include="Resources\drawable-xxxhdpi\" />
     <Folder Include="Renderers\" />
     <Folder Include="InterfaceImplementation\" />
+  </ItemGroup>
+  <ItemGroup>
+    <XamarinComponentReference Include="xamarin.inappbilling">
+      <Version>2.2</Version>
+      <Visible>False</Visible>
+    </XamarinComponentReference>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
   <Import Project="..\packages\Xamarin.Android.Support.Vector.Drawable.23.3.0\build\Xamarin.Android.Support.Vector.Drawable.targets" Condition="Exists('..\packages\Xamarin.Android.Support.Vector.Drawable.23.3.0\build\Xamarin.Android.Support.Vector.Drawable.targets')" />

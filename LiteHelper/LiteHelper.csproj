@@ -76,6 +76,10 @@
     <Compile Include="CodeResponse.cs" />
     <Compile Include="Controls\ViewExtension.cs" />
     <Compile Include="Controls\ExtendedWebView.cs" />
+    <Compile Include="Interfaces\IInAppPurchase.cs" />
+    <Compile Include="Interfaces\ProductInfo.cs" />
+    <Compile Include="Interfaces\SimpleTimerContainer.cs" />
+    <Compile Include="Interfaces\ITimerInstance.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="HtmlAgilityPack">

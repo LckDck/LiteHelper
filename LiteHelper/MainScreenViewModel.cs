@@ -12,6 +12,7 @@ using System.Windows.Input;
 using Foundation.Commands;
 using Foundation.MVVM.ViewModels;
 using LiteHelper.History;
+using LiteHelper.Interfaces;
 using LiteHelper.Managers;
 using Microsoft.Practices.ServiceLocation;
 using ModernHttpClient;
@@ -26,10 +27,12 @@ namespace LiteHelper
 		List<string> _cityNames;
 
 		CodeStorageManager _codeStorageManager;
+		IInAppPurchase _inapp;
 
 		public MainScreenViewModel ()
 		{
 			_storage = ServiceLocator.Current.GetInstance<IInternalStorage> ();
+			_inapp = ServiceLocator.Current.GetInstance<IInAppPurchase> ();
 			_codeStorageManager = ServiceLocator.Current.GetInstance<CodeStorageManager> ();
 			_cityNames = new List<string> (Constants.CityList.Keys);
 			var savedPin = _storage.RetrieveString (Constants.Pin);
@@ -580,10 +583,19 @@ namespace LiteHelper
 		ICommand _buyCommand;
 		public ICommand BuyCommand {
 			get {
-				return _buyCommand ?? (_buyCommand = new DelegateCommand ((obj) => {
-
+				return _buyCommand ?? (_buyCommand = new DelegateCommand (async (obj) => {
+					var result = await _inapp.BuyProduct (_inapp.PaidItem);
+					if (result != null) {
+						MakeAppPaid ();
+					}
 				}));
 			}
+		}
+
+
+		void MakeAppPaid ()
+		{
+			
 		}
 
 

@@ -22,6 +22,7 @@ namespace LiteHelper.Droid
 	{
 		public static MainActivity Current;
 		public Vibrator Vibrator;
+		InAppPurchase _iInAppPurchase;
 		protected override void OnCreate (Bundle bundle)
 		{
 			TabLayoutResource = Resource.Layout.Tabbar;
@@ -40,13 +41,30 @@ namespace LiteHelper.Droid
 
 			builder.RegisterInstance (new ResourceManager ())
 				   .As<IResourceManager> ();
+
+			builder.RegisterInstance (new InAppPurchase ())
+				   .As<IInAppPurchase> ();
+
+			builder.RegisterInstance (new TimerInstance ())
+			       .As<ITimerInstance> ();
 			var container = builder.Build ();
 
 			Vibrator = (Vibrator)GetSystemService (Context.VibratorService);
 
 			ServiceLocator.SetLocatorProvider (() => new AutofacServiceLocator (container));
 
+
+			_iInAppPurchase = ServiceLocator.Current.GetInstance<IInAppPurchase> () as InAppPurchase;
 			LoadApplication (new App ());
+		}
+
+
+		protected override void OnActivityResult (int requestCode, Result resultCode, Intent data)
+		{
+			base.OnActivityResult (requestCode, resultCode, data);
+			if (_iInAppPurchase != null) {
+				_iInAppPurchase.OnActivityResult (requestCode, resultCode, data);
+			}
 		}
 	}
 }
