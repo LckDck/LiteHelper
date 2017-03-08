@@ -80,6 +80,8 @@
     <Compile Include="Interfaces\ProductInfo.cs" />
     <Compile Include="Interfaces\SimpleTimerContainer.cs" />
     <Compile Include="Interfaces\ITimerInstance.cs" />
+    <Compile Include="Controls\CustomEntry.cs" />
+    <Compile Include="Managers\CodeManager.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="HtmlAgilityPack">

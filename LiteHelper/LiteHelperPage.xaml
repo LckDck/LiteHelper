@@ -13,7 +13,6 @@
 			<RowDefinition Height="44"/>
 			<RowDefinition Height="27"  x:Name="topRow"/>
 			<RowDefinition Height="Auto"/>
-			<RowDefinition Height="1"/>
 			<RowDefinition Height="*"/>
 			<RowDefinition Height="Auto"/>
 		</Grid.RowDefinitions>
@@ -25,14 +24,15 @@
 				<ColumnDefinition Width="*"/>
 			</Grid.ColumnDefinitions>
 
-			<Button Grid.Column="0" Grid.ColumnSpan="2" BackgroundColor="#F07810"  Margin="2,6,2,6" IsEnabled="false"/>
-			<Label Grid.Column="1" Text="{Binding Code}" TextColor="Black" FontAttributes="Bold" VerticalOptions="Center" FontSize="17" VerticalTextAlignment="Center" Margin="15,0,15,0"/>
-			<Label Grid.Column="1" Text="{Binding CodePlaceholder}" Opacity="0.5" TextColor="Black" FontSize="17" VerticalOptions="Center" VerticalTextAlignment="Center" Margin="15,0,15,0"/>
+			<Button Grid.Column="0" Grid.ColumnSpan="2" BackgroundColor="White"  Margin="2,6,2,6" IsEnabled="false"/>
+			<Label Grid.Column="1" Text="{Binding CodePlaceholder}" Opacity="0.5" TextColor="Black" FontSize="17" VerticalOptions="Center" VerticalTextAlignment="Center" Margin="8,0,15,0"/>
+
+			<controls:CustomEntry Grid.Column="1" Text="{Binding Code}" TextColor="Black" FontAttributes="Bold" VerticalOptions="Center" FontSize="17"/>
 			<Button Grid.Column="0" Image="menu.png" BackgroundColor="Transparent" VerticalOptions="Center" Command="{Binding ShowMenuCommand}"/> 	
 				
 		</Grid>
 		<Label Text="{Binding StatusText}" x:Name="StatusLabel" Margin="5,0,5,3" LineBreakMode="TailTruncation" Grid.Row="2" TextColor="White" FontAttributes="Bold" VerticalOptions="Center"/>
-		<Grid Grid.Row="3" BackgroundColor="White" RowSpacing="0" ColumnSpacing="0">
+		<Grid Grid.Row="3" BackgroundColor="Black" RowSpacing="0" ColumnSpacing="0">
 			
 			<Grid.RowDefinitions>
 					<RowDefinition Height="35"/>
@@ -43,18 +43,20 @@
 					<ColumnDefinition Width="*"/>
 					<ColumnDefinition Width="35"/>
 				</Grid.ColumnDefinitions>
-			<controls:ExtendedWebView Grid.RowSpan="3" Grid.Column="0" Source="{Binding CodesInfo}"  />
-			<Button Image="refresh.png" Grid.Row="0" Grid.Column="1" Command="{Binding RefreshCommand}" Margin="2,2,2,5" BackgroundColor="#F07810" HorizontalOptions="End" VerticalOptions="Start"/>
-			<Button Image="history.png" Grid.Row="1" Grid.Column="1" Command="{Binding ShowHistoryCommand}" Margin="2,5,2,2" BackgroundColor="#F07810" HorizontalOptions="End" VerticalOptions="Start"/>
+
+			<Button Grid.Column="0" Grid.ColumnSpan="2" Grid.RowSpan="3" BackgroundColor="White"  Margin="2,0,2,6" IsEnabled="false"/>
+			<controls:ExtendedWebView Grid.RowSpan="3" Grid.Column="0" Source="{Binding CodesInfo}" Margin="6,0,2,6" />
+			<Button Image="refresh.png" Grid.Row="0" Grid.Column="1" Command="{Binding RefreshCommand}" Margin="2,2,4,5" BackgroundColor="#F07810" HorizontalOptions="End" VerticalOptions="Start"/>
+			<Button Image="history.png" Grid.Row="1" Grid.Column="1" Command="{Binding ShowHistoryCommand}" Margin="2,5,8,2" BackgroundColor="#F07810" HorizontalOptions="End" VerticalOptions="End"/>
 		</Grid>
-		<BoxView Color="#F07810" Grid.Row="4"/>
+
 		
-		<Grid Grid.Row="5" ColumnSpacing="0" Margin="0,0,0,6">
+		<Grid Grid.Row="4" ColumnSpacing="0" Margin="0,0,0,6">
 			<ActivityIndicator IsVisible="{Binding IsLoading}" IsRunning="true" VerticalOptions="Start" HorizontalOptions="Center" Margin="0,15,0,0"/>
 			<WebView x:Name="WebView" IsVisible="{Binding IsLoading, Converter={StaticResource CnvBlInvert}}" Source="{Binding Source}"/>
 		</Grid>
 
-		<Grid RowSpacing="1" ColumnSpacing="1" Grid.Row="6" Padding="2,-2,2,2" VerticalOptions="End">
+		<Grid RowSpacing="1" ColumnSpacing="1" Grid.Row="5" Padding="2,-2,2,2" VerticalOptions="End">
 			<Grid.RowDefinitions>
 				<RowDefinition Height="40"/>
 				<RowDefinition Height="40"/>

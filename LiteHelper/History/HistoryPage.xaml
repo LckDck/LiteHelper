@@ -28,11 +28,13 @@
                 <DataTemplate>
                 <ViewCell>
                    <Grid Padding="10,8,10,8" RowSpacing="2">
-			   
-							
-				       <Label Grid.Row="0" FontAttributes="Bold" FontSize="18" TextColor="#F07810" VerticalOptions="Center" Text="{Binding Code}" HorizontalTextAlignment="Start"/>
-				       <Label Grid.Row="1" FontSize="14" TextColor="Black" VerticalOptions="Center" Text="{Binding StatusText}" HorizontalTextAlignment="Start" LineBreakMode="TailTruncation"/>
-
+			   			<Grid.ColumnDefinitions>
+			   				<ColumnDefinition Width="*"/>
+			   				<ColumnDefinition Width="Auto"/>
+						</Grid.ColumnDefinitions>
+				       <Label Grid.Row="0" Grid.ColumnSpan="2" FontAttributes="Bold" FontSize="18" TextColor="#F07810" VerticalOptions="Center" Text="{Binding Code}" HorizontalTextAlignment="Start"/>
+				       <Label Grid.Row="1" Grid.ColumnSpan="2" FontSize="14" TextColor="Black" VerticalOptions="Center" Text="{Binding StatusText}" HorizontalTextAlignment="Start" LineBreakMode="TailTruncation"/>
+				       <Button IsVisible="{Binding ResendVisible}" Grid.RowSpan="2" Command="{Binding ResendCommand}" Text="Изменить" TextColor="Black" BackgroundColor="#F07810" Grid.Column="1" Margin="0,5,0,5"/>
 					</Grid>
                   </ViewCell>
 

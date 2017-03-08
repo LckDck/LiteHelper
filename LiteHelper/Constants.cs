@@ -22,6 +22,10 @@ namespace LiteHelper
 
 		public static string DefaultCityCode = "kaliningrad";
 		public static string DefaultCity = "Калининград";
+		public static string Paid = "Paid";
+
+
+		public static string WrongCodeStatus = "Код не принят.";
 
 
 		public static Dictionary<string, string> CityList = new Dictionary<string, string> {

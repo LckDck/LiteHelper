@@ -12,5 +12,5 @@ namespace LiteHelper.History
 			InitializeComponent ();
 			BindingContext = new HistoryViewModel ();
 		}
-}
+	}
 }

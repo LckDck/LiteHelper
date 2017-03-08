@@ -38,11 +38,10 @@ namespace LiteHelper.Managers
 			if (existed != null) {
 				existed.LastEditTime = GetTime ();
 				existed.Status = status;
-				return;
+			} else {
+				_codes.Add (new CodeInfo { Code = key, Status = status, LastEditTime = GetTime () });
 			}
-
-			_codes.Add (new CodeInfo { Code = key, Status = status, LastEditTime = GetTime () });
-			var sorted = _codes.OrderByDescending (item => item.LastEditTime).ToList();
+			var sorted = _codes.OrderByDescending (item => item.LastEditTime).ToList ();
 			_codes = sorted;
 			CheckTooMuchCodes ();
 		}

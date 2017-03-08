@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -29,10 +29,13 @@ namespace LiteHelper
 		CodeStorageManager _codeStorageManager;
 		IInAppPurchase _inapp;
 
+		CodeManager _codeManager;
+
 		public MainScreenViewModel ()
 		{
 			_storage = ServiceLocator.Current.GetInstance<IInternalStorage> ();
 			_inapp = ServiceLocator.Current.GetInstance<IInAppPurchase> ();
+			_codeManager = ServiceLocator.Current.GetInstance<CodeManager> ();
 			_codeStorageManager = ServiceLocator.Current.GetInstance<CodeStorageManager> ();
 			_cityNames = new List<string> (Constants.CityList.Keys);
 			var savedPin = _storage.RetrieveString (Constants.Pin);
@@ -53,10 +56,18 @@ namespace LiteHelper
 			Prefix4 = (string.IsNullOrEmpty (savedKey4)) ? Keyboard._0_3_Text : savedKey4;
 			var savedKey5 = _storage.RetrieveString (Constants.Key5);
 			Prefix5 = (string.IsNullOrEmpty (savedKey5)) ? Keyboard._0_4_Text : savedKey5;
+			Code = string.Empty;
 
-
-
+			_codeManager.ResendCode += ResendCode;
+			Paid = true;//_storage.RetrieveBool (Constants.Paid);
 			Load ();
+		}
+
+		void ResendCode (object sender, CodeEventArgs e)
+		{
+			Code = e.Code;
+			Utils.LastSelection = Code.Length;
+			StatusText = string.Empty;
 		}
 
 		async void Load (string html = null)
@@ -126,7 +137,12 @@ namespace LiteHelper
 						_codeStorageManager.AddCode (Code, "Отправляется...");
 						IsLoading = true;
 						var result = await SendCode ();
-						Code = string.Empty;
+
+						if (result != Constants.WrongCodeStatus) {
+							Utils.LastSelection = 0;
+							Code = string.Empty;
+						}
+
 						Refresh (result);
 					}
 
@@ -249,8 +265,10 @@ namespace LiteHelper
 		public ICommand ClearCommand {
 			get {
 				return _clearCommand ?? (_clearCommand = new DelegateCommand ((obj) => {
+					Utils.LastSelection = 0;
 					Code = String.Empty;
 					StatusText = String.Empty;
+
 				}));
 			}
 		}
@@ -260,7 +278,10 @@ namespace LiteHelper
 			get {
 				return _backspaceCommand ?? (_backspaceCommand = new DelegateCommand ((obj) => {
 					if (Code.Length == 0) return;
-					Code = Code.Substring (0, Code.Length - 1);
+					Utils.LastSelection--;
+					Code = Code.Remove (Utils.LastSelection, 1);
+
+
 				}));
 			}
 		}
@@ -301,6 +322,11 @@ namespace LiteHelper
 			}
 		}
 
+		private void ChangeCode (string diff) {
+			var selectBefore = Utils.LastSelection;
+			Utils.LastSelection += diff.Length;
+			Code = Code.Insert (selectBefore, diff);
+		}
 
 		public string CodePlaceholder {
 			get {
@@ -315,7 +341,7 @@ namespace LiteHelper
 		public ICommand _0_0_Command {
 			get {
 				return __0_0_Command ?? (__0_0_Command = new DelegateCommand ((obj) => {
-					Code += Prefix1;
+					ChangeCode (Prefix1);
 				}));
 			}
 		}
@@ -325,7 +351,7 @@ namespace LiteHelper
 		public ICommand _0_1_Command {
 			get {
 				return __0_1_Command ?? (__0_1_Command = new DelegateCommand ((obj) => {
-					Code += Prefix2;
+					ChangeCode (Prefix2);
 				}));
 			}
 		}
@@ -335,7 +361,7 @@ namespace LiteHelper
 		public ICommand _0_2_Command {
 			get {
 				return __0_2_Command ?? (__0_2_Command = new DelegateCommand ((obj) => {
-					Code += Prefix3;
+					ChangeCode (Prefix3);
 				}));
 			}
 		}
@@ -344,7 +370,7 @@ namespace LiteHelper
 		public ICommand _0_3_Command {
 			get {
 				return __0_3_Command ?? (__0_3_Command = new DelegateCommand ((obj) => {
-					Code += Prefix4;
+					ChangeCode (Prefix4);
 				}));
 			}
 		}
@@ -353,7 +379,7 @@ namespace LiteHelper
 		public ICommand _0_4_Command {
 			get {
 				return __0_4_Command ?? (__0_4_Command = new DelegateCommand ((obj) => {
-					Code += Prefix5;
+					ChangeCode (Prefix5);
 				}));
 			}
 		}
@@ -364,7 +390,7 @@ namespace LiteHelper
 		public ICommand _0_Command {
 			get {
 				return __0_Command ?? (__0_Command = new DelegateCommand ((obj) => {
-					Code += Keyboard._0_Text;
+					ChangeCode (Keyboard._0_Text);
 				}));
 			}
 		}
@@ -374,7 +400,7 @@ namespace LiteHelper
 		public ICommand _1_Command {
 			get {
 				return __1_Command ?? (__1_Command = new DelegateCommand ((obj) => {
-					Code += Keyboard._1_Text;
+					ChangeCode (Keyboard._1_Text);
 				}));
 			}
 		}
@@ -383,7 +409,7 @@ namespace LiteHelper
 		public ICommand _2_Command {
 			get {
 				return __2_Command ?? (__2_Command = new DelegateCommand ((obj) => {
-					Code += Keyboard._2_Text;
+					ChangeCode (Keyboard._2_Text);
 				}));
 			}
 		}
@@ -392,7 +418,7 @@ namespace LiteHelper
 		public ICommand _3_Command {
 			get {
 				return __3_Command ?? (__3_Command = new DelegateCommand ((obj) => {
-					Code += Keyboard._3_Text;
+					ChangeCode (Keyboard._3_Text);
 				}));
 			}
 		}
@@ -401,7 +427,7 @@ namespace LiteHelper
 		public ICommand _4_Command {
 			get {
 				return __4_Command ?? (__4_Command = new DelegateCommand ((obj) => {
-					Code += Keyboard._4_Text;
+					ChangeCode (Keyboard._4_Text);
 				}));
 			}
 		}
@@ -410,7 +436,7 @@ namespace LiteHelper
 		public ICommand _5_Command {
 			get {
 				return __5_Command ?? (__5_Command = new DelegateCommand ((obj) => {
-					Code += Keyboard._5_Text;
+					ChangeCode (Keyboard._5_Text);
 				}));
 			}
 		}
@@ -419,7 +445,7 @@ namespace LiteHelper
 		public ICommand _6_Command {
 			get {
 				return __6_Command ?? (__6_Command = new DelegateCommand ((obj) => {
-					Code += Keyboard._6_Text;
+					ChangeCode (Keyboard._6_Text);
 				}));
 			}
 		}
@@ -429,7 +455,7 @@ namespace LiteHelper
 		public ICommand _7_Command {
 			get {
 				return __7_Command ?? (__7_Command = new DelegateCommand ((obj) => {
-					Code += Keyboard._7_Text;
+					ChangeCode (Keyboard._7_Text);
 				}));
 			}
 		}
@@ -439,7 +465,7 @@ namespace LiteHelper
 		public ICommand _8_Command {
 			get {
 				return __8_Command ?? (__8_Command = new DelegateCommand ((obj) => {
-					Code += Keyboard._8_Text;
+					ChangeCode (Keyboard._8_Text);
 				}));
 			}
 		}
@@ -448,7 +474,7 @@ namespace LiteHelper
 		public ICommand _9_Command {
 			get {
 				return __9_Command ?? (__9_Command = new DelegateCommand ((obj) => {
-					Code += Keyboard._9_Text;
+					ChangeCode (Keyboard._9_Text);
 				}));
 			}
 		}
@@ -595,18 +621,33 @@ namespace LiteHelper
 
 		void MakeAppPaid ()
 		{
-			
+			_storage.Store (Constants.Paid, true);
+			Paid = true;
 		}
 
+		bool _paid;
+		public bool Paid { 
+			get {
+				return _paid;
+			}
+			set {
+				_paid = value;
+				RaisePropertyChanged (()=> Paid);
+			}
+		}
 
 		ICommand _showHistoryCommand;
 		public ICommand ShowHistoryCommand {
 			get {
 				return _showHistoryCommand ?? (_showHistoryCommand = new DelegateCommand ((obj) => {
-					Application.Current.MainPage.Navigation.PushModalAsync (new HistoryPage());
+					Application.Current.MainPage.Navigation.PushModalAsync (
+						new HistoryPage ()
+					);
 				}));
 			}
 		}
+
+
 
 
 		bool? _doVibro;
@@ -646,7 +687,7 @@ namespace LiteHelper
 			}
 		}
 
-		private string DebugBody = "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\">\n\n<html>\n<head>\n\t<META http-equiv=\"Content-Type\" Content=\"text/html; charset=windows-1251\">\n\t\t<meta http-equiv=\"Cache-Control\" content=\"max-age=0\" />\n\t<script src=\"timer.js\" type=\"text/javascript\"></script>\n\t<title>DozoR.Lite / Тестовая игра</title>\n\n\n<style>\nbody {\n\n\n\n\n}\n\n\n\n\n\n</style>\n\n</head>\n\n<body>\n\n\n\n<!--errorText--><p><strong>Код не принят.</strong></p><!--errorTextEnd--><p>Обновлено в 23:31:35<br /></p><!--contentBegin-->\n\t\n<!--gameType Through-->\n\n\n<p><strong>Задание <!--levelNumberBegin-->1<!--levelNumberEnd-->.  <!--bMin-->0<!--bMinE--> мин. (получено <!--bTime-->20:45:00<!--bTimeEnd-->):</strong><!--levelTextBegin--><p dir=\"ltr\">Экстрасенсам дано видеть намного больше обычного человека, зачастую у них в сознании вырисовываются странные картины. Вот одна из них:</p>\n<p dir=\"ltr\">Справа замок, слева круглое озеро, от замка до озера и вокруг него идет дорожка.</p><div class=spoiler><strong>Примечания к заданию</strong>: <!--taskNotes--><p dir=\"ltr\">Введите ответ в поле спойлера для получения проверочного кода и дальнейших указаний. Формат ответа: СЛОВО. &nbsp;На локации 13 кодов, для закрытия уровня достаточно ввести любые 10, включая проверочный. На уровне - бонусный код (1 минута), доступен до ввода основных кодов, код стандартный. Время на уровне увеличено.</p>\n<p dir=\"ltr\">P.S.: Не забудьте сдать агентам выданные на брифинге анкеты игроков (заявки)!&nbsp;</p><!--taskNotesEnd--></div><br/><!--levelTextEnd--><div style='font-size:120%;'><div class=spoiler><div class=title style='padding-left:0'>Спойлер</div><p dir=\"ltr\">Проверочный код: 157D15RL227</p>\n<p>На локации вас встретят агенты - выполняйте указания:</p>\n<p><img src=\"../../uploaded/kaliningrad/Lite/157DRL/BY_eUJIJoOk.jpg\" alt=\"\" width=\"450\" height=\"400\" /></p></div></div><!--bonusCodeCount 1--><!--mainCodeCount 14--><!--difficultyCods null,2,2,1+,1+,1+,1+,1+,1+,1+,1+,1+,1+,1+,1+--><div class='dcodes'><strong>Коды сложности</strong><br>основные коды: <span style='color:red'>null</span>, 2, 2, 1+, 1+, 1+, 1+, 1+, <span style='color:red'>1+</span>, <span style='color:red'>1+</span>, 1+, <span style='color:red'>1+</span>, <span style='color:red'>1+</span>, <span style='color:red'>1+</span><br>бонусные коды: 1+<br> (Всего - 14 , для прохождения достаточно любых 10 , принято - 7) <br/><strong>Бонусные коды</strong>: код сложности 1+ (1  мин.)<br /></p></div><p>Найденные коды: основные коды: 157D15RL227, 157DR131L, 157D1R47L4, 157DRL123456789123456789, 157DR1842L51, 157D13R5L7, 157DRL18265</p><p><strong>Подсказка l:</strong><br/><!--LevelClue1Text--><p><img src=\"../../uploaded/kaliningrad/Lite/157DRL/vghnmhjmnhyt.png\" alt=\"\" width=\"460\" height=\"260\" /></p><!--LevelClue1TextEnd--></p><p><strong>Подсказка 2:</strong><br/><!--LevelClue2Text--><p>Пароль к спойлеру: КЛЮЧ</p><!--LevelClue2TextEnd--></p><p>Введите код</p>\t<form  data-ajax=\"false\" method=post>\n   \t\t<input type=hidden name=\"nomessage\" value=\"\">\n\t\t<input type=hidden name=action value=entcod>\n\t\t<input type=hidden name=pin value=485315>\n\t\t<input type=hidden name=lev value=0>\n\t\t<input type=text id=\"levelCodeInput\" placeholder=\"код к заданию\" name=cod size=25 value=\"\"><br>\n\t\t\t\t<input id=\"sendCode\" type=submit value=\"отправить код\">\n\t</form>\n\t\n<!--contentEnd-->Время на уровне: <span id=clock2></span><br>\n\tВремя до окончания задания: <span id=clock>&nbsp;</span> \n\t    <script>\n    window.setTimeout('countDown(4406,9995)',1000); \n    </script>\n\t<!--timeOnLevelBegin 9995 timeOnLevelEnd-->\n\t<!--timeToFinishBegin 4406 timeToFinishEnd-->\n\t<!--LastLog--><div class=title>Последние три события игры</div><table cellpadding=3 cellspacing=0 border=1><tr><th>время</th><th>событие</th><th>данные</th></tr><tr bgcolor=><td nowrap>23:31:32</td><td>передан неверный код</td><td>159DRL&nbsp;</td></tr><tr bgcolor=><td nowrap>23:31:03</td><td>принят код</td><td>157DRL18265&nbsp;</td></tr><tr bgcolor=><td nowrap>23:30:53</td><td>принят код</td><td>157D13R5L7&nbsp;</td></tr></table><!--LastLogEnd--><br>\n\t\t<form method=get data-ajax=\"false\">\n   \t\t<input type=hidden name=\"pin\" value=\"485315\">\n   \t\t<input type=hidden  name=\"q\" value=\"44272283OKOFGTAI\"/>\n   \t\t<input type=hidden  name=\"zone\" value=\"\"/>\n   \t\t<input type=hidden  name=\"nomessage\" value=\"\"/>\n\t\t<input type=submit value=\"обновить страницу\">\n\t\t</form>\n\t\t<form method=get name=refr data-ajax=\"false\">\n   \t\t<input type=hidden name=\"pin\" value=\"485315\">\n   \t\t<input type=hidden  name=\"q\" value=\"44272283OKOFGTAI\"/>\n   \t\t<input type=hidden  name=\"nomessage\" value=\"\"/>\n\t\t<input type=submit value=\"обновлять автоматически через\"> <input type=text name=refresh size=3 value=\"0\"> мин.\n\t\t</form>\n<p>Таймер браузера работает независимо от сервера! Используйте авто-обновление страницы для его синхронизации.\n<!--gameID248--><style>\n.teamstat td, .teamstat th  {\n\tfont-family : Arial;\n\tfont-size : 12px;\n}\n\n.teamstat table, .teamstat table td, .teamstat table th {\n  border: 1px solid gray;\n  border-collapse: collapse;\n}\n\n.teamstat table td, .teamstat table th {\n\tpadding : 2px 2px 2px 2px;\n}\n</style>\n<hr/><p><b>Общение с организатором</b><br/><form method=post>\n\t\t\t<input type=hidden name=action value=message>\n\t\t\t<input type=hidden name=gameData[id] value=248>\n\t\t\t<input type=hidden name=pin value=485315>\n\t\t\t<textarea name=content rows=5 cols=30></textarea><br>\n\t\t\t<input type=submit value='отправить сообщение'>\n\t\t</form><p>Команда: <strong>Pepperhouse</strong><!--<br>Игрок: <strong></strong>--><br>Игра: <strong>Тестовая игра. Начало в 2017-03-03 20:45:00. </strong><br>Организатор: <strong>Надежда Елисеева</strong>. ICQ: <strong>291-377-249</strong>. tel: <strong>+7(911)4820353</strong></p>\n\n\n\n</body>\n</html>";
-		private string DebugBodyNoError = "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\">\n\n<html>\n<head>\n\t<META http-equiv=\"Content-Type\" Content=\"text/html; charset=windows-1251\">\n\t\t<meta http-equiv=\"Cache-Control\" content=\"max-age=0\" />\n\t<script src=\"timer.js\" type=\"text/javascript\"></script>\n\t<title>DozoR.Lite / Тестовая игра</title>\n\n\n<style>\nbody {\n\n\n\n\n}\n\n\n\n\n\n</style>\n\n</head>\n\n<body>\n\n\n\n<!--errorText--><p><!--errorTextEnd--><p>Обновлено в 23:31:35<br /></p><!--contentBegin-->\n\t\n<!--gameType Through-->\n\n\n<p><strong>Задание <!--levelNumberBegin-->1<!--levelNumberEnd-->.  <!--bMin-->0<!--bMinE--> мин. (получено <!--bTime-->20:45:00<!--bTimeEnd-->):</strong><!--levelTextBegin--><p dir=\"ltr\">Экстрасенсам дано видеть намного больше обычного человека, зачастую у них в сознании вырисовываются странные картины. Вот одна из них:</p>\n<p dir=\"ltr\">Справа замок, слева круглое озеро, от замка до озера и вокруг него идет дорожка.</p><div class=spoiler><strong>Примечания к заданию</strong>: <!--taskNotes--><p dir=\"ltr\">Введите ответ в поле спойлера для получения проверочного кода и дальнейших указаний. Формат ответа: СЛОВО. &nbsp;На локации 13 кодов, для закрытия уровня достаточно ввести любые 10, включая проверочный. На уровне - бонусный код (1 минута), доступен до ввода основных кодов, код стандартный. Время на уровне увеличено.</p>\n<p dir=\"ltr\">P.S.: Не забудьте сдать агентам выданные на брифинге анкеты игроков (заявки)!&nbsp;</p><!--taskNotesEnd--></div><br/><!--levelTextEnd--><div style='font-size:120%;'><div class=spoiler><div class=title style='padding-left:0'>Спойлер</div><p dir=\"ltr\">Проверочный код: 157D15RL227</p>\n<p>На локации вас встретят агенты - выполняйте указания:</p>\n<p><img src=\"../../uploaded/kaliningrad/Lite/157DRL/BY_eUJIJoOk.jpg\" alt=\"\" width=\"450\" height=\"400\" /></p></div></div><!--bonusCodeCount 1--><!--mainCodeCount 14--><!--difficultyCods null,2,2,1+,1+,1+,1+,1+,1+,1+,1+,1+,1+,1+,1+--><div class='dcodes'><strong>Коды сложности</strong><br>основные коды: <span style='color:red'>null</span>, 2, 2, 1+, 1+, 1+, 1+, 1+, <span style='color:red'>1+</span>, <span style='color:red'>1+</span>, 1+, <span style='color:red'>1+</span>, <span style='color:red'>1+</span>, <span style='color:red'>1+</span><br>бонусные коды: 1+<br> (Всего - 14 , для прохождения достаточно любых 10 , принято - 7) <br/><strong>Бонусные коды</strong>: код сложности 1+ (1  мин.)<br /></p></div><p>Найденные коды: основные коды: 157D15RL227, 157DR131L, 157D1R47L4, 157DRL123456789123456789, 157DR1842L51, 157D13R5L7, 157DRL18265</p><p><strong>Подсказка l:</strong><br/><!--LevelClue1Text--><p><img src=\"../../uploaded/kaliningrad/Lite/157DRL/vghnmhjmnhyt.png\" alt=\"\" width=\"460\" height=\"260\" /></p><!--LevelClue1TextEnd--></p><p><strong>Подсказка 2:</strong><br/><!--LevelClue2Text--><p>Пароль к спойлеру: КЛЮЧ</p><!--LevelClue2TextEnd--></p><p>Введите код</p>\t<form  data-ajax=\"false\" method=post>\n   \t\t<input type=hidden name=\"nomessage\" value=\"\">\n\t\t<input type=hidden name=action value=entcod>\n\t\t<input type=hidden name=pin value=485315>\n\t\t<input type=hidden name=lev value=0>\n\t\t<input type=text id=\"levelCodeInput\" placeholder=\"код к заданию\" name=cod size=25 value=\"\"><br>\n\t\t\t\t<input id=\"sendCode\" type=submit value=\"отправить код\">\n\t</form>\n\t\n<!--contentEnd-->Время на уровне: <span id=clock2></span><br>\n\tВремя до окончания задания: <span id=clock>&nbsp;</span> \n\t    <script>\n    window.setTimeout('countDown(4406,9995)',1000); \n    </script>\n\t<!--timeOnLevelBegin 9995 timeOnLevelEnd-->\n\t<!--timeToFinishBegin 4406 timeToFinishEnd-->\n\t<!--LastLog--><div class=title>Последние три события игры</div><table cellpadding=3 cellspacing=0 border=1><tr><th>время</th><th>событие</th><th>данные</th></tr><tr bgcolor=><td nowrap>23:31:32</td><td>передан неверный код</td><td>159DRL&nbsp;</td></tr><tr bgcolor=><td nowrap>23:31:03</td><td>принят код</td><td>157DRL18265&nbsp;</td></tr><tr bgcolor=><td nowrap>23:30:53</td><td>принят код</td><td>157D13R5L7&nbsp;</td></tr></table><!--LastLogEnd--><br>\n\t\t<form method=get data-ajax=\"false\">\n   \t\t<input type=hidden name=\"pin\" value=\"485315\">\n   \t\t<input type=hidden  name=\"q\" value=\"44272283OKOFGTAI\"/>\n   \t\t<input type=hidden  name=\"zone\" value=\"\"/>\n   \t\t<input type=hidden  name=\"nomessage\" value=\"\"/>\n\t\t<input type=submit value=\"обновить страницу\">\n\t\t</form>\n\t\t<form method=get name=refr data-ajax=\"false\">\n   \t\t<input type=hidden name=\"pin\" value=\"485315\">\n   \t\t<input type=hidden  name=\"q\" value=\"44272283OKOFGTAI\"/>\n   \t\t<input type=hidden  name=\"nomessage\" value=\"\"/>\n\t\t<input type=submit value=\"обновлять автоматически через\"> <input type=text name=refresh size=3 value=\"0\"> мин.\n\t\t</form>\n<p>Таймер браузера работает независимо от сервера! Используйте авто-обновление страницы для его синхронизации.\n<!--gameID248--><style>\n.teamstat td, .teamstat th  {\n\tfont-family : Arial;\n\tfont-size : 12px;\n}\n\n.teamstat table, .teamstat table td, .teamstat table th {\n  border: 1px solid gray;\n  border-collapse: collapse;\n}\n\n.teamstat table td, .teamstat table th {\n\tpadding : 2px 2px 2px 2px;\n}\n</style>\n<hr/><p><b>Общение с организатором</b><br/><form method=post>\n\t\t\t<input type=hidden name=action value=message>\n\t\t\t<input type=hidden name=gameData[id] value=248>\n\t\t\t<input type=hidden name=pin value=485315>\n\t\t\t<textarea name=content rows=5 cols=30></textarea><br>\n\t\t\t<input type=submit value='отправить сообщение'>\n\t\t</form><p>Команда: <strong>Pepperhouse</strong><!--<br>Игрок: <strong></strong>--><br>Игра: <strong>Тестовая игра. Начало в 2017-03-03 20:45:00. </strong><br>Организатор: <strong>Надежда Елисеева</strong>. ICQ: <strong>291-377-249</strong>. tel: <strong>+7(911)4820353</strong></p>\n\n\n\n</body>\n</html>";
+		//private string DebugBody = "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\">\n\n<html>\n<head>\n\t<META http-equiv=\"Content-Type\" Content=\"text/html; charset=windows-1251\">\n\t\t<meta http-equiv=\"Cache-Control\" content=\"max-age=0\" />\n\t<script src=\"timer.js\" type=\"text/javascript\"></script>\n\t<title>DozoR.Lite / Тестовая игра</title>\n\n\n<style>\nbody {\n\n\n\n\n}\n\n\n\n\n\n</style>\n\n</head>\n\n<body>\n\n\n\n<!--errorText--><p><strong>Код не принят.</strong></p><!--errorTextEnd--><p>Обновлено в 23:31:35<br /></p><!--contentBegin-->\n\t\n<!--gameType Through-->\n\n\n<p><strong>Задание <!--levelNumberBegin-->1<!--levelNumberEnd-->.  <!--bMin-->0<!--bMinE--> мин. (получено <!--bTime-->20:45:00<!--bTimeEnd-->):</strong><!--levelTextBegin--><p dir=\"ltr\">Экстрасенсам дано видеть намного больше обычного человека, зачастую у них в сознании вырисовываются странные картины. Вот одна из них:</p>\n<p dir=\"ltr\">Справа замок, слева круглое озеро, от замка до озера и вокруг него идет дорожка.</p><div class=spoiler><strong>Примечания к заданию</strong>: <!--taskNotes--><p dir=\"ltr\">Введите ответ в поле спойлера для получения проверочного кода и дальнейших указаний. Формат ответа: СЛОВО. &nbsp;На локации 13 кодов, для закрытия уровня достаточно ввести любые 10, включая проверочный. На уровне - бонусный код (1 минута), доступен до ввода основных кодов, код стандартный. Время на уровне увеличено.</p>\n<p dir=\"ltr\">P.S.: Не забудьте сдать агентам выданные на брифинге анкеты игроков (заявки)!&nbsp;</p><!--taskNotesEnd--></div><br/><!--levelTextEnd--><div style='font-size:120%;'><div class=spoiler><div class=title style='padding-left:0'>Спойлер</div><p dir=\"ltr\">Проверочный код: 157D15RL227</p>\n<p>На локации вас встретят агенты - выполняйте указания:</p>\n<p><img src=\"../../uploaded/kaliningrad/Lite/157DRL/BY_eUJIJoOk.jpg\" alt=\"\" width=\"450\" height=\"400\" /></p></div></div><!--bonusCodeCount 1--><!--mainCodeCount 14--><!--difficultyCods null,2,2,1+,1+,1+,1+,1+,1+,1+,1+,1+,1+,1+,1+--><div class='dcodes'><strong>Коды сложности</strong><br>основные коды: <span style='color:red'>null</span>, 2, 2, 1+, 1+, 1+, 1+, 1+, <span style='color:red'>1+</span>, <span style='color:red'>1+</span>, 1+, <span style='color:red'>1+</span>, <span style='color:red'>1+</span>, <span style='color:red'>1+</span><br>бонусные коды: 1+<br> (Всего - 14 , для прохождения достаточно любых 10 , принято - 7) <br/><strong>Бонусные коды</strong>: код сложности 1+ (1  мин.)<br /></p></div><p>Найденные коды: основные коды: 157D15RL227, 157DR131L, 157D1R47L4, 157DRL123456789123456789, 157DR1842L51, 157D13R5L7, 157DRL18265</p><p><strong>Подсказка l:</strong><br/><!--LevelClue1Text--><p><img src=\"../../uploaded/kaliningrad/Lite/157DRL/vghnmhjmnhyt.png\" alt=\"\" width=\"460\" height=\"260\" /></p><!--LevelClue1TextEnd--></p><p><strong>Подсказка 2:</strong><br/><!--LevelClue2Text--><p>Пароль к спойлеру: КЛЮЧ</p><!--LevelClue2TextEnd--></p><p>Введите код</p>\t<form  data-ajax=\"false\" method=post>\n   \t\t<input type=hidden name=\"nomessage\" value=\"\">\n\t\t<input type=hidden name=action value=entcod>\n\t\t<input type=hidden name=pin value=485315>\n\t\t<input type=hidden name=lev value=0>\n\t\t<input type=text id=\"levelCodeInput\" placeholder=\"код к заданию\" name=cod size=25 value=\"\"><br>\n\t\t\t\t<input id=\"sendCode\" type=submit value=\"отправить код\">\n\t</form>\n\t\n<!--contentEnd-->Время на уровне: <span id=clock2></span><br>\n\tВремя до окончания задания: <span id=clock>&nbsp;</span> \n\t    <script>\n    window.setTimeout('countDown(4406,9995)',1000); \n    </script>\n\t<!--timeOnLevelBegin 9995 timeOnLevelEnd-->\n\t<!--timeToFinishBegin 4406 timeToFinishEnd-->\n\t<!--LastLog--><div class=title>Последние три события игры</div><table cellpadding=3 cellspacing=0 border=1><tr><th>время</th><th>событие</th><th>данные</th></tr><tr bgcolor=><td nowrap>23:31:32</td><td>передан неверный код</td><td>159DRL&nbsp;</td></tr><tr bgcolor=><td nowrap>23:31:03</td><td>принят код</td><td>157DRL18265&nbsp;</td></tr><tr bgcolor=><td nowrap>23:30:53</td><td>принят код</td><td>157D13R5L7&nbsp;</td></tr></table><!--LastLogEnd--><br>\n\t\t<form method=get data-ajax=\"false\">\n   \t\t<input type=hidden name=\"pin\" value=\"485315\">\n   \t\t<input type=hidden  name=\"q\" value=\"44272283OKOFGTAI\"/>\n   \t\t<input type=hidden  name=\"zone\" value=\"\"/>\n   \t\t<input type=hidden  name=\"nomessage\" value=\"\"/>\n\t\t<input type=submit value=\"обновить страницу\">\n\t\t</form>\n\t\t<form method=get name=refr data-ajax=\"false\">\n   \t\t<input type=hidden name=\"pin\" value=\"485315\">\n   \t\t<input type=hidden  name=\"q\" value=\"44272283OKOFGTAI\"/>\n   \t\t<input type=hidden  name=\"nomessage\" value=\"\"/>\n\t\t<input type=submit value=\"обновлять автоматически через\"> <input type=text name=refresh size=3 value=\"0\"> мин.\n\t\t</form>\n<p>Таймер браузера работает независимо от сервера! Используйте авто-обновление страницы для его синхронизации.\n<!--gameID248--><style>\n.teamstat td, .teamstat th  {\n\tfont-family : Arial;\n\tfont-size : 12px;\n}\n\n.teamstat table, .teamstat table td, .teamstat table th {\n  border: 1px solid gray;\n  border-collapse: collapse;\n}\n\n.teamstat table td, .teamstat table th {\n\tpadding : 2px 2px 2px 2px;\n}\n</style>\n<hr/><p><b>Общение с организатором</b><br/><form method=post>\n\t\t\t<input type=hidden name=action value=message>\n\t\t\t<input type=hidden name=gameData[id] value=248>\n\t\t\t<input type=hidden name=pin value=485315>\n\t\t\t<textarea name=content rows=5 cols=30></textarea><br>\n\t\t\t<input type=submit value='отправить сообщение'>\n\t\t</form><p>Команда: <strong>Pepperhouse</strong><!--<br>Игрок: <strong></strong>--><br>Игра: <strong>Тестовая игра. Начало в 2017-03-03 20:45:00. </strong><br>Организатор: <strong>Надежда Елисеева</strong>. ICQ: <strong>291-377-249</strong>. tel: <strong>+7(911)4820353</strong></p>\n\n\n\n</body>\n</html>";
+		//private string DebugBodyNoError = "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\">\n\n<html>\n<head>\n\t<META http-equiv=\"Content-Type\" Content=\"text/html; charset=windows-1251\">\n\t\t<meta http-equiv=\"Cache-Control\" content=\"max-age=0\" />\n\t<script src=\"timer.js\" type=\"text/javascript\"></script>\n\t<title>DozoR.Lite / Тестовая игра</title>\n\n\n<style>\nbody {\n\n\n\n\n}\n\n\n\n\n\n</style>\n\n</head>\n\n<body>\n\n\n\n<!--errorText--><p><!--errorTextEnd--><p>Обновлено в 23:31:35<br /></p><!--contentBegin-->\n\t\n<!--gameType Through-->\n\n\n<p><strong>Задание <!--levelNumberBegin-->1<!--levelNumberEnd-->.  <!--bMin-->0<!--bMinE--> мин. (получено <!--bTime-->20:45:00<!--bTimeEnd-->):</strong><!--levelTextBegin--><p dir=\"ltr\">Экстрасенсам дано видеть намного больше обычного человека, зачастую у них в сознании вырисовываются странные картины. Вот одна из них:</p>\n<p dir=\"ltr\">Справа замок, слева круглое озеро, от замка до озера и вокруг него идет дорожка.</p><div class=spoiler><strong>Примечания к заданию</strong>: <!--taskNotes--><p dir=\"ltr\">Введите ответ в поле спойлера для получения проверочного кода и дальнейших указаний. Формат ответа: СЛОВО. &nbsp;На локации 13 кодов, для закрытия уровня достаточно ввести любые 10, включая проверочный. На уровне - бонусный код (1 минута), доступен до ввода основных кодов, код стандартный. Время на уровне увеличено.</p>\n<p dir=\"ltr\">P.S.: Не забудьте сдать агентам выданные на брифинге анкеты игроков (заявки)!&nbsp;</p><!--taskNotesEnd--></div><br/><!--levelTextEnd--><div style='font-size:120%;'><div class=spoiler><div class=title style='padding-left:0'>Спойлер</div><p dir=\"ltr\">Проверочный код: 157D15RL227</p>\n<p>На локации вас встретят агенты - выполняйте указания:</p>\n<p><img src=\"../../uploaded/kaliningrad/Lite/157DRL/BY_eUJIJoOk.jpg\" alt=\"\" width=\"450\" height=\"400\" /></p></div></div><!--bonusCodeCount 1--><!--mainCodeCount 14--><!--difficultyCods null,2,2,1+,1+,1+,1+,1+,1+,1+,1+,1+,1+,1+,1+--><div class='dcodes'><strong>Коды сложности</strong><br>основные коды: <span style='color:red'>null</span>, 2, 2, 1+, 1+, 1+, 1+, 1+, <span style='color:red'>1+</span>, <span style='color:red'>1+</span>, 1+, <span style='color:red'>1+</span>, <span style='color:red'>1+</span>, <span style='color:red'>1+</span><br>бонусные коды: 1+<br> (Всего - 14 , для прохождения достаточно любых 10 , принято - 7) <br/><strong>Бонусные коды</strong>: код сложности 1+ (1  мин.)<br /></p></div><p>Найденные коды: основные коды: 157D15RL227, 157DR131L, 157D1R47L4, 157DRL123456789123456789, 157DR1842L51, 157D13R5L7, 157DRL18265</p><p><strong>Подсказка l:</strong><br/><!--LevelClue1Text--><p><img src=\"../../uploaded/kaliningrad/Lite/157DRL/vghnmhjmnhyt.png\" alt=\"\" width=\"460\" height=\"260\" /></p><!--LevelClue1TextEnd--></p><p><strong>Подсказка 2:</strong><br/><!--LevelClue2Text--><p>Пароль к спойлеру: КЛЮЧ</p><!--LevelClue2TextEnd--></p><p>Введите код</p>\t<form  data-ajax=\"false\" method=post>\n   \t\t<input type=hidden name=\"nomessage\" value=\"\">\n\t\t<input type=hidden name=action value=entcod>\n\t\t<input type=hidden name=pin value=485315>\n\t\t<input type=hidden name=lev value=0>\n\t\t<input type=text id=\"levelCodeInput\" placeholder=\"код к заданию\" name=cod size=25 value=\"\"><br>\n\t\t\t\t<input id=\"sendCode\" type=submit value=\"отправить код\">\n\t</form>\n\t\n<!--contentEnd-->Время на уровне: <span id=clock2></span><br>\n\tВремя до окончания задания: <span id=clock>&nbsp;</span> \n\t    <script>\n    window.setTimeout('countDown(4406,9995)',1000); \n    </script>\n\t<!--timeOnLevelBegin 9995 timeOnLevelEnd-->\n\t<!--timeToFinishBegin 4406 timeToFinishEnd-->\n\t<!--LastLog--><div class=title>Последние три события игры</div><table cellpadding=3 cellspacing=0 border=1><tr><th>время</th><th>событие</th><th>данные</th></tr><tr bgcolor=><td nowrap>23:31:32</td><td>передан неверный код</td><td>159DRL&nbsp;</td></tr><tr bgcolor=><td nowrap>23:31:03</td><td>принят код</td><td>157DRL18265&nbsp;</td></tr><tr bgcolor=><td nowrap>23:30:53</td><td>принят код</td><td>157D13R5L7&nbsp;</td></tr></table><!--LastLogEnd--><br>\n\t\t<form method=get data-ajax=\"false\">\n   \t\t<input type=hidden name=\"pin\" value=\"485315\">\n   \t\t<input type=hidden  name=\"q\" value=\"44272283OKOFGTAI\"/>\n   \t\t<input type=hidden  name=\"zone\" value=\"\"/>\n   \t\t<input type=hidden  name=\"nomessage\" value=\"\"/>\n\t\t<input type=submit value=\"обновить страницу\">\n\t\t</form>\n\t\t<form method=get name=refr data-ajax=\"false\">\n   \t\t<input type=hidden name=\"pin\" value=\"485315\">\n   \t\t<input type=hidden  name=\"q\" value=\"44272283OKOFGTAI\"/>\n   \t\t<input type=hidden  name=\"nomessage\" value=\"\"/>\n\t\t<input type=submit value=\"обновлять автоматически через\"> <input type=text name=refresh size=3 value=\"0\"> мин.\n\t\t</form>\n<p>Таймер браузера работает независимо от сервера! Используйте авто-обновление страницы для его синхронизации.\n<!--gameID248--><style>\n.teamstat td, .teamstat th  {\n\tfont-family : Arial;\n\tfont-size : 12px;\n}\n\n.teamstat table, .teamstat table td, .teamstat table th {\n  border: 1px solid gray;\n  border-collapse: collapse;\n}\n\n.teamstat table td, .teamstat table th {\n\tpadding : 2px 2px 2px 2px;\n}\n</style>\n<hr/><p><b>Общение с организатором</b><br/><form method=post>\n\t\t\t<input type=hidden name=action value=message>\n\t\t\t<input type=hidden name=gameData[id] value=248>\n\t\t\t<input type=hidden name=pin value=485315>\n\t\t\t<textarea name=content rows=5 cols=30></textarea><br>\n\t\t\t<input type=submit value='отправить сообщение'>\n\t\t</form><p>Команда: <strong>Pepperhouse</strong><!--<br>Игрок: <strong></strong>--><br>Игра: <strong>Тестовая игра. Начало в 2017-03-03 20:45:00. </strong><br>Организатор: <strong>Надежда Елисеева</strong>. ICQ: <strong>291-377-249</strong>. tel: <strong>+7(911)4820353</strong></p>\n\n\n\n</body>\n</html>";
 	}
 }

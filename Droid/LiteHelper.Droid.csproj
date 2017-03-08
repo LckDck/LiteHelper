@@ -125,6 +125,7 @@
     <Compile Include="Renderers\ExtendedWebViewRenderer.cs" />
     <Compile Include="InterfaceImplementation\InAppPurchase.cs" />
     <Compile Include="InterfaceImplementation\TimerInstance.cs" />
+    <Compile Include="Renderers\CommonEntryRenderer.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\AboutResources.txt" />
@@ -150,10 +151,6 @@
     <AndroidResource Include="Resources\drawable-xxhdpi\ic_keyboard_backspace_black_24dp.png" />
     <AndroidResource Include="Resources\drawable-xxxhdpi\ic_keyboard_backspace_black_24dp.png" />
     <AndroidResource Include="Resources\drawable\splash_screen.xml" />
-    <AndroidResource Include="Resources\drawable-hdpi\menu.png" />
-    <AndroidResource Include="Resources\drawable-xhdpi\menu.png" />
-    <AndroidResource Include="Resources\drawable-xxhdpi\menu.png" />
-    <AndroidResource Include="Resources\drawable-xxxhdpi\menu.png" />
     <AndroidResource Include="Resources\drawable-hdpi\history.png" />
     <AndroidResource Include="Resources\drawable-xhdpi\history.png" />
     <AndroidResource Include="Resources\drawable-xxhdpi\history.png" />
@@ -182,6 +179,10 @@
     <AndroidResource Include="Resources\drawable-xxhdpi\delete.png" />
     <AndroidResource Include="Resources\drawable-xxxhdpi\back.png" />
     <AndroidResource Include="Resources\drawable-xxxhdpi\delete.png" />
+    <AndroidResource Include="Resources\drawable-hdpi\menu.png" />
+    <AndroidResource Include="Resources\drawable-xhdpi\menu.png" />
+    <AndroidResource Include="Resources\drawable-xxhdpi\menu.png" />
+    <AndroidResource Include="Resources\drawable-xxxhdpi\menu.png" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Resources\drawable-xxxhdpi\" />

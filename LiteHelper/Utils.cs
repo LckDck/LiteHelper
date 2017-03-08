@@ -13,5 +13,8 @@ namespace LiteHelper
 		}
 
 		public static bool DoVibro { get; set;}
+
+		public static int LastSelection { get; set; }
+
 	}
 }

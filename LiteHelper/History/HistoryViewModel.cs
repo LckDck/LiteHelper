@@ -19,7 +19,7 @@ namespace LiteHelper.History
 			_codeStorageManager = ServiceLocator.Current.GetInstance<CodeStorageManager> ();
 			_historyList = new ObservableCollection<HistoryItem> ();
 			foreach (var item in _codeStorageManager.Codes) {
-				_historyList.Add (new HistoryItem { Code = item.Code, Status = item.Status });
+				_historyList.Add (new HistoryItem { Code = item.Code, Status = item.Status, Command = CloseCommand });
 			}
 		}
 
@@ -38,6 +38,12 @@ namespace LiteHelper.History
 		public ICommand CloseCommand {
 			get {
 				return _closeCommand ?? (_closeCommand = new DelegateCommand ((obj) => {
+					var code = (string)obj;
+					if (!string.IsNullOrEmpty (code)) {
+						var codeManager = ServiceLocator.Current.GetInstance<CodeManager> ();
+						codeManager.UpdateCode (code);
+
+					}
 					Application.Current.MainPage.Navigation.PopModalAsync ();
 				}));
 			}

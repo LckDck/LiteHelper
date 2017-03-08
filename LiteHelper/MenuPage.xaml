@@ -83,7 +83,7 @@
 		<Button Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2" BackgroundColor="Transparent" x:Name="ContactDeveloper" />
 
 		
-		<Label TextColor="Black" Grid.ColumnSpan="2" Text="{Binding DonateText}" Grid.Row="5" FontSize="9" HorizontalTextAlignment="Start" HorizontalOptions="Start" Margin="10,0,10,0" VerticalOptions="End"/>
-		<Button HeightRequest="44" Grid.ColumnSpan="2" TextColor="Black" Grid.Row="6" BackgroundColor="#F07810" Margin="5,5,5,5" Command="{Binding BuyCommand}" Text="Отключить рекламу"/>
+		<Label TextColor="Black" IsVisible="{Binding Paid, Converter={StaticResource CnvBlInvert}}" Grid.ColumnSpan="2" Text="{Binding DonateText}" Grid.Row="5" FontSize="9" HorizontalTextAlignment="Start" HorizontalOptions="Start" Margin="10,0,10,0" VerticalOptions="End"/>
+		<Button HeightRequest="44"  IsVisible="{Binding Paid, Converter={StaticResource CnvBlInvert}}" Grid.ColumnSpan="2" TextColor="Black" Grid.Row="6" BackgroundColor="#F07810" Margin="5,5,5,5" Command="{Binding BuyCommand}" Text="Отключить рекламу"/>
 	</Grid>
 </ContentPage>

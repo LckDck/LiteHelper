@@ -17,12 +17,17 @@ namespace LiteHelper
 
 		}
 
+
+		bool _inited;
 		protected override void OnAppearing ()
 		{
 			base.OnAppearing ();
 			WebView.Navigating += OnNavigating;
 			StatusLabel.PropertyChanged += OnStatusLabelPropertyChanged;
-			_initialHeight = topRow.Height.Value;
+			if (!_inited) {
+				_initialHeight = topRow.Height.Value;
+				_inited = true;
+			}
 		}
 
 
