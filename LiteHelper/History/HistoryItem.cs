@@ -18,7 +18,7 @@ namespace LiteHelper.History
 		public string Status { get; set;}
 
 		public string StatusText { get {
-				return (Code == "1") ? Constants.WrongCodeStatus : Status;
+				return Status;
 			} 
 		}
 

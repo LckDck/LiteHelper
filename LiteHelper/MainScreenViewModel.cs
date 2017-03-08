@@ -59,8 +59,18 @@ namespace LiteHelper
 			Code = string.Empty;
 
 			_codeManager.ResendCode += ResendCode;
-			Paid = true;//_storage.RetrieveBool (Constants.Paid);
+			Paid = _storage.RetrieveBool (Constants.Paid);
 			Load ();
+			LoadProducts ();
+		}
+
+		async void LoadProducts ()
+		{
+			var product = await _inapp.GetProdutctInfo (_inapp.PaidItem);
+			if (product != null) {
+				Paid = product.Bought;
+				_storage.Store (Constants.Paid, product.Bought);
+			}
 		}
 
 		void ResendCode (object sender, CodeEventArgs e)
@@ -155,14 +165,10 @@ namespace LiteHelper
 		{
 			var client = GetClient ();
 			var code = Code;
-			using (var message = new HttpRequestMessage (
-				HttpMethod.Post,
-				Constants.GetSendCodeUrl (CityCode, PIN)) {
-				Content = new StringContent ($"pin={PIN}&cod={code}&action=entcod", Encoding.UTF8, "application/x-www-form-urlencoded")
-
-			})
+			var content = new StringContent ($"pin={PIN}&cod={code}&action=entcod", Encoding.UTF8, "application/x-www-form-urlencoded");
+			var url = Constants.GetSendCodeUrl (CityCode, PIN);
 			try {
-				using (var response = await client.SendAsync (message)) {
+				using (var response = await client.PostAsync (url, content)) {
 					var body = await response.Content.ReadAsStringAsync ();
 					var status = GetStatusFor (code, body);
 					_codeStorageManager.AddCode (Code, status);

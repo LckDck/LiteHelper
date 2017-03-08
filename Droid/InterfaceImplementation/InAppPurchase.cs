@@ -84,6 +84,10 @@ namespace LiteHelper.Droid.InterfaceImplementation
 					};
 				}
 
+				if (_alreadyPurchased!= null && _alreadyPurchased.ProductId == product.ProductId) {
+					prodInfo.Bought = true;
+				}
+
 				if (!string.IsNullOrEmpty (product.Price_Amount_Micros)) {
 					prodInfo.Price = Convert.ToDecimal (product.Price_Amount_Micros) / 1000000;
 				}

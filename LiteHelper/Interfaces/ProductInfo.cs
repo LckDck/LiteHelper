@@ -7,5 +7,6 @@ namespace LiteHelper.Interfaces
 		public string PriceString { get; set; }
 		public decimal Price { get; set; }
 		public string DisplayName { get; set; }
+		public bool Bought { get; set; }
 	}
 }
