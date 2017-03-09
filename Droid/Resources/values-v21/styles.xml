@@ -16,7 +16,7 @@
 		<!-- colorAccent is used as the default value for colorControlActivated
          which is used to tint widgets -->
 		<item name="colorAccent">#F07810</item>
-		<item name="android:windowBackground">@drawable/cutted_splash_screen</item>
+		<item name="android:windowBackground">@drawable/splash_screen</item>
 		<!-- You can also set colorControlNormal, colorControlActivated
          colorControlHighlight and colorSwitchThumbNormal. -->
 		<item name="windowActionModeOverlay">true</item>

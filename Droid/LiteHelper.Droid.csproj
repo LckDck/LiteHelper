@@ -184,11 +184,14 @@
     <AndroidResource Include="Resources\drawable-xhdpi\menu.png" />
     <AndroidResource Include="Resources\drawable-xxhdpi\menu.png" />
     <AndroidResource Include="Resources\drawable-xxxhdpi\menu.png" />
+    <AndroidResource Include="Resources\values-v21\styles.xml" />
+    <AndroidResource Include="Resources\drawable\cutted_splash_screen.xml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Resources\drawable-xxxhdpi\" />
     <Folder Include="Renderers\" />
     <Folder Include="InterfaceImplementation\" />
+    <Folder Include="Resources\values-v21\" />
   </ItemGroup>
   <ItemGroup>
     <XamarinComponentReference Include="xamarin.inappbilling">

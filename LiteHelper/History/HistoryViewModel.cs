@@ -52,9 +52,13 @@ namespace LiteHelper.History
 		ICommand _deleteCommand;
 		public ICommand DeleteCommand {
 			get {
-				return _deleteCommand ?? (_deleteCommand = new DelegateCommand ((obj) => {
-					_codeStorageManager.Clear ();
-					Refresh ();
+				return _deleteCommand ?? (_deleteCommand = new DelegateCommand (async (obj) => {
+
+					var yes = await Application.Current.MainPage.DisplayAlert (String.Empty, "Хотите очистить историю введенных кодов?", "Да", "Отмена");
+					if (yes) {
+						_codeStorageManager.Clear ();
+						Refresh ();
+					}
 				}));
 			}
 		}
