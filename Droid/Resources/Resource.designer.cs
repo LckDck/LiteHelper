@@ -3044,6 +3044,9 @@ namespace LiteHelper.Droid
 			// aapt resource value: 0x7f060011
 			public const int character_counter_pattern = 2131099665;
 			
+			// aapt resource value: 0x7f060027
+			public const int com_crashlytics_android_build_id = 2131099687;
+			
 			// aapt resource value: 0x7f060026
 			public const int library_name = 2131099686;
 			

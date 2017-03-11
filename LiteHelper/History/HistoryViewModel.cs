@@ -23,6 +23,20 @@ namespace LiteHelper.History
 			}
 		}
 
+		public override void OnNavigatingFrom ()
+		{
+			base.OnNavigatingFrom ();
+			_codeStorageManager.StatusChanged += OnCodeStatusChanged;
+		}
+
+		void OnCodeStatusChanged (object sender, CodeInfoEventArgs e)
+		{
+			var info = HistoryList.Where (item => item.Code == e.Code).ToList();
+			if (info.Any()) {
+				info.First().Status = e.Status;
+			}
+		}
+
 		ObservableCollection<HistoryItem> _historyList;
 		public ObservableCollection<HistoryItem> HistoryList { 
 			get { 
@@ -47,6 +61,12 @@ namespace LiteHelper.History
 					Application.Current.MainPage.Navigation.PopModalAsync ();
 				}));
 			}
+		}
+
+		public override void OnNavigatingTo ()
+		{
+			_codeStorageManager.StatusChanged -= OnCodeStatusChanged;
+			base.OnNavigatingTo ();
 		}
 
 		ICommand _deleteCommand;

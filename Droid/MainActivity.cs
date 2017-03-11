@@ -14,6 +14,8 @@ using Autofac.Extras.CommonServiceLocator;
 using LiteHelper.History;
 using LiteHelper.Interfaces;
 using LiteHelper.Managers;
+using CrashlyticsKit;
+using FabricSdk;
 
 namespace LiteHelper.Droid
 {
@@ -25,6 +27,8 @@ namespace LiteHelper.Droid
 		InAppPurchase _iInAppPurchase;
 		protected override void OnCreate (Bundle bundle)
 		{
+
+			InitCrashlytics ();
 			TabLayoutResource = Resource.Layout.Tabbar;
 			ToolbarResource = Resource.Layout.Toolbar;
 			Current = this;
@@ -59,6 +63,17 @@ namespace LiteHelper.Droid
 			LoadApplication (new App ());
 		}
 
+		void InitCrashlytics ()
+		{
+			
+
+			Crashlytics.Instance.Initialize ();
+#if DEBUG
+			Fabric.Instance.Debug = true;
+#endif
+			Fabric.Instance.Initialize (this);
+
+		}
 
 		protected override void OnActivityResult (int requestCode, Result resultCode, Intent data)
 		{

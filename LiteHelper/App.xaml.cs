@@ -29,12 +29,14 @@ namespace LiteHelper
 
 		protected override void OnSleep ()
 		{
+			CrossConnectivity.Current.ConnectivityChanged -= OnConnectChanged;
 			var page = MainPage as MainMasterDetailPage;
 			if (page != null) {
 				page.SaveEverything ();
 			}
 			_codeStorageManager.SaveAll ();
 		}
+
 
 		protected override void OnResume ()
 		{
@@ -44,11 +46,7 @@ namespace LiteHelper
 
 		private void OnConnectChanged (object sender, ConnectivityChangedEventArgs e)
 		{
-			if (!e.IsConnected) {
-				
-			} else {
-				
-			}
+			_codeStorageManager.IsConnected = e.IsConnected;
 		}
 
 	}

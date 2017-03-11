@@ -38,12 +38,44 @@ namespace LiteHelper.Managers
 			if (existed != null) {
 				existed.LastEditTime = GetTime ();
 				existed.Status = status;
+				if (StatusChanged != null) {
+					StatusChanged.Invoke (null, new CodeInfoEventArgs { Code = existed.Code, Status = status});
+				}
 			} else {
 				_codes.Add (new CodeInfo { Code = key, Status = status, LastEditTime = GetTime () });
 			}
 			var sorted = _codes.OrderByDescending (item => item.LastEditTime).ToList ();
 			_codes = sorted;
 			CheckTooMuchCodes ();
+		}
+
+		bool _isConnected;
+		public bool IsConnected { 
+			get {
+				return _isConnected;
+			} 
+
+			internal set {
+				var oldValue = _isConnected;
+				_isConnected = value;
+				if (oldValue != _isConnected) {
+					if (ConnectedChanged != null) {
+						ConnectedChanged.Invoke (null, new StatusEventArgs { Positive = _isConnected});
+					}
+				}
+			} 
+		}
+
+		public event EventHandler<StatusEventArgs> ConnectedChanged;
+		public event EventHandler<CodeInfoEventArgs> StatusChanged;
+
+		internal void SetTimeOut (string code)
+		{
+			var info = _codes.Find (item => item.Code == code);
+			if (info != null){
+				info.TimeOut = true;
+				info.Status = Constants.CodeStatusTimeOut;
+			}
 		}
 
 		void CheckTooMuchCodes ()
@@ -75,5 +107,14 @@ namespace LiteHelper.Managers
 			var serialized = JsonConvert.SerializeObject (_codes);
 			_storage.Store (Constants.Codes, serialized);
 		}
+	}
+
+	public class StatusEventArgs : EventArgs { 
+		public bool Positive { get; set;}
+	}
+
+	public class CodeInfoEventArgs : EventArgs { 
+		public string Code { get; set;}
+		public string Status { get; set;}
 	}
 }

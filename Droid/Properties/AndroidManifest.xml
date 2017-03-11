@@ -1,11 +1,14 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android" android:versionName="1.0" package="ru.peppercrazy.litehelper" android:versionCode="4">
-	<uses-sdk android:minSdkVersion="15" />
+	<uses-sdk android:minSdkVersion="15" android:targetSdkVersion="22" />
 	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 	<uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
 	<uses-permission android:name="android.permission.VIBRATE" />
 	<uses-permission android:name="com.android.vending.BILLING" />
 	<uses-permission android:name="android.permission.INTERNET" />
-	<application android:label="LiteHelper"></application>
+	<application android:label="LiteHelper">
+		<meta-data android:name="io.fabric.ApiKey" android:value="d47c40ae7f8ae5ef15505b369e03162d2b40980e" />
+	</application>
+
 </manifest>

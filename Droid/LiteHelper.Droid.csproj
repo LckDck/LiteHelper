@@ -8,7 +8,7 @@
     <OutputType>Library</OutputType>
     <RootNamespace>LiteHelper.Droid</RootNamespace>
     <AssemblyName>LiteHelper.Droid</AssemblyName>
-    <TargetFrameworkVersion>v7.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v7.1</TargetFrameworkVersion>
     <AndroidApplication>True</AndroidApplication>
     <AndroidResgenFile>Resources\Resource.designer.cs</AndroidResgenFile>
     <AndroidResgenClass>Resource</AndroidResgenClass>
@@ -16,6 +16,7 @@
     <MonoAndroidResourcePrefix>Resources</MonoAndroidResourcePrefix>
     <MonoAndroidAssetsPrefix>Assets</MonoAndroidAssetsPrefix>
     <AndroidUseLatestPlatformSdk>true</AndroidUseLatestPlatformSdk>
+    <AndroidTlsProvider></AndroidTlsProvider>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -106,6 +107,24 @@
     <Reference Include="Xamarin.InAppBilling">
       <HintPath>..\Components\xamarin.inappbilling-2.2\lib\android\Xamarin.InAppBilling.dll</HintPath>
     </Reference>
+    <Reference Include="FabricSdk">
+      <HintPath>..\packages\Fabric.1.1\lib\MonoAndroid10\FabricSdk.dll</HintPath>
+    </Reference>
+    <Reference Include="FabricSdk.Platform">
+      <HintPath>..\packages\Fabric.1.1\lib\MonoAndroid10\FabricSdk.Platform.dll</HintPath>
+    </Reference>
+    <Reference Include="AnswersKit">
+      <HintPath>..\packages\Crashlytics.1.1\lib\MonoAndroid10\AnswersKit.dll</HintPath>
+    </Reference>
+    <Reference Include="AnswersKit.Platform">
+      <HintPath>..\packages\Crashlytics.1.1\lib\MonoAndroid10\AnswersKit.Platform.dll</HintPath>
+    </Reference>
+    <Reference Include="CrashlyticsKit">
+      <HintPath>..\packages\Crashlytics.1.1\lib\MonoAndroid10\CrashlyticsKit.dll</HintPath>
+    </Reference>
+    <Reference Include="CrashlyticsKit.Platform">
+      <HintPath>..\packages\Crashlytics.1.1\lib\MonoAndroid10\CrashlyticsKit.Platform.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\LiteHelper\LiteHelper.csproj">
@@ -186,6 +205,8 @@
     <AndroidResource Include="Resources\drawable-xxxhdpi\menu.png" />
     <AndroidResource Include="Resources\values-v21\styles.xml" />
     <AndroidResource Include="Resources\drawable\cutted_splash_screen.xml" />
+    <AndroidResource Include="Resources\values\strings.xml" />
+    <AndroidResource Include="Resources\values-v21\strings.xml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Resources\drawable-xxxhdpi\" />

@@ -15,7 +15,19 @@ namespace LiteHelper.History
 		}
 
 		public string Code { get; set;}
-		public string Status { get; set;}
+
+		string _status;
+		public string Status {
+			get {
+				return _status;
+			}
+			set {
+				_status = value;
+				RaisePropertyChanged (() => Status);
+				RaisePropertyChanged (() => StatusText);
+				RaisePropertyChanged (() => ResendVisible);
+			}
+		}
 
 		public string StatusText { get {
 				return Status;
@@ -24,9 +36,12 @@ namespace LiteHelper.History
 
 		public bool ResendVisible { 
 			get {
-				return StatusText == Constants.WrongCodeStatus;
+				return StatusText == Constants.CodeStatusWrong
+					                          || StatusText == Constants.CodeStatusSending
+					                          || StatusText == Constants.CodeStatusTimeOut;
 			}
 		}
+
 
 		ICommand _resendCommand;
 		public ICommand ResendCommand { 

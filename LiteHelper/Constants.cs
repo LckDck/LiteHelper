@@ -5,6 +5,9 @@ namespace LiteHelper
 {
 	public static class Constants
 	{
+
+		public static string CrashlyticsKey = "d47c40ae7f8ae5ef15505b369e03162d2b40980e";
+
 		public static string ShowMenuMessage = "ShowMenuMessage";
 
 		public static string Key1 = "Key1";
@@ -25,7 +28,11 @@ namespace LiteHelper
 		public static string Paid = "Paid";
 
 
-		public static string WrongCodeStatus = "Код не принят.";
+		public static string CodeStatusWrong = "Код не принят.";
+		public static string CodeStatusSending = "Отправляется...";
+		public static string CodeStatusTimeOut = "Нет сети.";
+
+		public static string NoNetwork = "Нет сети.";
 
 
 		public static Dictionary<string, string> CityList = new Dictionary<string, string> {

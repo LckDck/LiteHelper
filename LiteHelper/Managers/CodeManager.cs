@@ -5,10 +5,10 @@ namespace LiteHelper.Managers
 	{
 		internal void UpdateCode (string code)
 		{
-			ResendCode.Invoke (null, new CodeEventArgs { Code = code});
+			ChangeCode.Invoke (null, new CodeEventArgs { Code = code});
 		}
 
-		public event EventHandler<CodeEventArgs> ResendCode;
+		public event EventHandler<CodeEventArgs> ChangeCode;
 
 	}
 

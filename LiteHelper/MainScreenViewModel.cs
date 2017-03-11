@@ -7,6 +7,7 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Foundation.Commands;
@@ -58,10 +59,55 @@ namespace LiteHelper
 			Prefix5 = (string.IsNullOrEmpty (savedKey5)) ? Keyboard._0_4_Text : savedKey5;
 			Code = string.Empty;
 
-			_codeManager.ResendCode += ResendCode;
+			_codeManager.ChangeCode += ChangeCode;
+			_codeStorageManager.ConnectedChanged += ConnectedChanged;
 			Paid = _storage.RetrieveBool (Constants.Paid);
 			Load ();
 			LoadProducts ();
+		}
+
+		void ConnectedChanged (object sender, StatusEventArgs e)
+		{
+			var isConnected = e.Positive;
+			if (isConnected) {
+				StartResend ();
+			} else {
+				CancelLoad ();
+			}
+		}
+
+
+		void CancelLoad () { 
+			Debug.WriteLine ("Cancel Resend");
+			if (cts != null) {
+				cts.Cancel ();
+				cts = null;
+			}
+		}
+
+
+		CancellationTokenSource cts;
+
+
+		void StartResend ()
+		{
+			if (!_codeStorageManager.IsConnected) return;
+
+			var codeToResend = _codeStorageManager.Codes.Find (item => item.Status == Constants.CodeStatusTimeOut);
+			if (codeToResend == null) {
+				return;
+			}
+			CancelLoad ();
+			Debug.WriteLine ("Start Resend");
+			cts = new CancellationTokenSource ();
+
+			try {
+				Task.Run (async () => {
+					await SendCode (codeToResend.Code, true);
+				}, cts.Token);
+			} catch (Exception e){
+				Debug.WriteLine (e.Message);
+			}
 		}
 
 		async void LoadProducts ()
@@ -73,7 +119,7 @@ namespace LiteHelper
 			}
 		}
 
-		void ResendCode (object sender, CodeEventArgs e)
+		void ChangeCode (object sender, CodeEventArgs e)
 		{
 			Code = e.Code;
 			Utils.LastSelection = Code.Length;
@@ -91,7 +137,7 @@ namespace LiteHelper
 						html = await httpClient.GetStringAsync (Constants.GetHtmlUrl (CityCode, PIN));
 					} catch (Exception e) {
 						Debug.WriteLine (e.Message);
-						html = "Нет сети";
+						html = Constants.NoNetwork;
 					}
 					StatusText = string.Empty;
 				}
@@ -144,14 +190,16 @@ namespace LiteHelper
 			get {
 				return _sendCommand ?? (_sendCommand = new DelegateCommand (async (obj) => {
 					if (!String.IsNullOrEmpty (Code)) {
-						_codeStorageManager.AddCode (Code, "Отправляется...");
+						_codeStorageManager.AddCode (Code, Constants.CodeStatusSending);
 						IsLoading = true;
-						var result = await SendCode ();
+						var result = await SendCode (Code);
 
-						if (result != Constants.WrongCodeStatus) {
+						if (result != Constants.CodeStatusWrong) {
 							Utils.LastSelection = 0;
 							Code = string.Empty;
 						}
+
+
 
 						Refresh (result);
 					}
@@ -161,25 +209,31 @@ namespace LiteHelper
 		}
 
 
-		async Task<string> SendCode ()
+		async Task<string> SendCode (string code, bool inBackground = false)
 		{
 			var client = GetClient ();
-			var code = Code;
 			var content = new StringContent ($"pin={PIN}&cod={code}&action=entcod", Encoding.UTF8, "application/x-www-form-urlencoded");
 			var url = Constants.GetSendCodeUrl (CityCode, PIN);
 			try {
 				using (var response = await client.PostAsync (url, content)) {
 					var body = await response.Content.ReadAsStringAsync ();
 					var status = GetStatusFor (code, body);
-					_codeStorageManager.AddCode (Code, status);
-					UpdateCodesInfo (body);
-					StatusText = status;
+					_codeStorageManager.AddCode (code, status);
+					if (!inBackground) {
+						UpdateCodesInfo (body);
+						StatusText = status;
+					}
 					Debug.WriteLine (body);
+					StartResend ();
 					return body;
 				}
 			} catch (Exception e) {
 				Debug.WriteLine (e.Message);
-				return "Нет сети";
+				StatusText = Constants.CodeStatusTimeOut;
+				_codeStorageManager.SetTimeOut (code);
+				Debug.WriteLine (e.Message);
+				StartResend ();
+				return Constants.NoNetwork;
 			}
 		}
 
@@ -233,7 +287,7 @@ namespace LiteHelper
 		{
 			_requestHandler = new NativeMessageHandler ();
 			var client = new HttpClient (_requestHandler) {
-				Timeout = new TimeSpan (0, 1, 0)
+				Timeout = new TimeSpan (0, 0, 10)
 			};
 			client.DefaultRequestHeaders.Accept.Clear ();
 			client.DefaultRequestHeaders.Accept.Add (new MediaTypeWithQualityHeaderValue ("application/x-www-form-urlencoded"));

@@ -82,6 +82,7 @@
     <Compile Include="Interfaces\ITimerInstance.cs" />
     <Compile Include="Controls\CustomEntry.cs" />
     <Compile Include="Managers\CodeManager.cs" />
+    <Compile Include="Controls\BasePage.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="HtmlAgilityPack">

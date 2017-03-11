@@ -6,6 +6,7 @@ namespace LiteHelper.History
 		public string Code {get; set;}
 		public string Status {get; set;}
 		public double LastEditTime { get; set; }
+		public bool TimeOut { get; set; }
 		public bool Deleted { get; internal set; }
 	}
 }
