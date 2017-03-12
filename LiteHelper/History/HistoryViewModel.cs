@@ -48,18 +48,24 @@ namespace LiteHelper.History
 		}
 
 
-		ICommand _closeCommand;
-		public ICommand CloseCommand {
+		protected override void NotifyCommandsCanExecuteChanged ()
+		{
+			base.NotifyCommandsCanExecuteChanged ();
+			CloseCommand.NotifyCanExecuteChanged ();
+		}
+
+		DelegateCommand _closeCommand;
+		public DelegateCommand CloseCommand {
 			get {
 				return _closeCommand ?? (_closeCommand = new DelegateCommand ((obj) => {
+					BlockCommands ();
 					var code = (string)obj;
 					if (!string.IsNullOrEmpty (code)) {
 						var codeManager = ServiceLocator.Current.GetInstance<CodeManager> ();
 						codeManager.UpdateCode (code);
-
 					}
 					Application.Current.MainPage.Navigation.PopModalAsync ();
-				}));
+				}, CanExecutePredicate));
 			}
 		}
 

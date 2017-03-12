@@ -3,11 +3,12 @@ using System.ComponentModel;
 using System.IO;
 using System.Net;
 using System.Net.Http;
+using LiteHelper.Controls;
 using Xamarin.Forms;
 
 namespace LiteHelper
 {
-	public partial class LiteHelperPage : ContentPage
+	public partial class LiteHelperPage : BasePage
 	{
 		public LiteHelperPage ()
 		{

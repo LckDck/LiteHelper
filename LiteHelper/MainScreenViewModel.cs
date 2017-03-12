@@ -66,6 +66,12 @@ namespace LiteHelper
 			LoadProducts ();
 		}
 
+		public override void OnNavigatingFrom ()
+		{
+			base.OnNavigatingFrom ();
+			ReleaseCommands ();
+		}
+
 		void ConnectedChanged (object sender, StatusEventArgs e)
 		{
 			var isConnected = e.Positive;
@@ -696,14 +702,22 @@ namespace LiteHelper
 			}
 		}
 
-		ICommand _showHistoryCommand;
-		public ICommand ShowHistoryCommand {
+
+		protected override void NotifyCommandsCanExecuteChanged ()
+		{
+			base.NotifyCommandsCanExecuteChanged ();
+			ShowHistoryCommand.NotifyCanExecuteChanged ();
+		}
+
+		DelegateCommand _showHistoryCommand;
+		public DelegateCommand ShowHistoryCommand {
 			get {
 				return _showHistoryCommand ?? (_showHistoryCommand = new DelegateCommand ((obj) => {
+					BlockCommands ();
 					Application.Current.MainPage.Navigation.PushModalAsync (
 						new HistoryPage ()
 					);
-				}));
+				}, CanExecutePredicate));
 			}
 		}
 
