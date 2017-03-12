@@ -7,6 +7,7 @@
 	<uses-permission android:name="android.permission.VIBRATE" />
 	<uses-permission android:name="com.android.vending.BILLING" />
 	<uses-permission android:name="android.permission.INTERNET" />
-	<application android:label="LiteHelper"></application>
-	<meta-data android:name="io.fabric.ApiKey" android:value="d47c40ae7f8ae5ef15505b369e03162d2b40980e" />
+	<application android:label="LiteHelper">
+		<meta-data android:name="io.fabric.ApiKey" android:value="d47c40ae7f8ae5ef15505b369e03162d2b40980e" />
+	</application>
 </manifest>
