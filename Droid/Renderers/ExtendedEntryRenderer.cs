@@ -45,19 +45,27 @@ namespace LiteHelper.Droid.Renderers
 
 			if (e.EventTime == StrangeEventTime) {
 				Control.SetSelection (Utils.LastSelection);
+				ClearFocus ();
 			} else {
 				Utils.LastSelection = Control.SelectionStart;
 			}
+
 			return true;
 		}
 
 
 		public void OnFocusChange (Android.Views.View v, bool hasFocus) {
-			
-			Control.Activated = true;
-			Control.Pressed = true;
-			Control.SetSelection (Utils.LastSelection);
-			System.Diagnostics.Debug.WriteLine ("OnFocusChange");
+			if (!hasFocus) {
+				Control.Activated = true;
+				Control.Pressed = true;
+				Control.SetSelection (Utils.LastSelection);
+				System.Diagnostics.Debug.WriteLine ("OnFocusChange");
+			} else { 
+				var imm = (InputMethodManager)v.Context.GetSystemService (Android.Content.Context.InputMethodService);
+				if (imm != null) {
+					imm.HideSoftInputFromWindow (v.WindowToken, 0);
+				}
+			}
 		}
 
 
