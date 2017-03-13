@@ -12,7 +12,6 @@ namespace LiteHelper
 			Detail.BindingContext = bc;
 
 			bc.ShowMenuEvent += ShowMenu;
-
 			Master = new MenuPage { Title = "Sandwich"};
 			Master.BindingContext = Detail.BindingContext;
 

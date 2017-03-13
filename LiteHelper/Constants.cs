@@ -20,7 +20,7 @@ namespace LiteHelper
 		public static string Pin = "Pin";
 
 		public static string Codes = "Codes";
-		public static string DoVibro = "DoVibro";
+		public static string VibroOff = "VibroOff";
 
 
 		public static string DefaultCityCode = "kaliningrad";

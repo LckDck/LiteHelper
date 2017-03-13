@@ -724,22 +724,20 @@ namespace LiteHelper
 
 
 
-		bool? _doVibro;
-		public bool DoVibro { 
+		bool _vibroOff;
+		public bool VibroOff { 
 			get {
-				if(_doVibro.HasValue) {
-					return _doVibro.Value;
-				}
-				Utils.DoVibro = _storage.RetrieveBool (Constants.DoVibro);
-				_doVibro = Utils.DoVibro;
-				return _doVibro.Value;
+				
+				Utils.VibroOff = _storage.RetrieveBool (Constants.VibroOff);
+				_vibroOff = Utils.VibroOff;
+				return _vibroOff;
 			}
 
 			set {
-				_doVibro = value;
-				Utils.DoVibro = value;
-				_storage.Store (Constants.DoVibro, _doVibro);
-				RaisePropertyChanged (() => DoVibro);
+				_vibroOff = value;
+				Utils.VibroOff = value;
+				_storage.Store (Constants.VibroOff, _vibroOff);
+				RaisePropertyChanged (() => VibroOff);
 			}
 		}
 
@@ -748,7 +746,7 @@ namespace LiteHelper
 		public ICommand ChangeVibrateCommand {
 			get {
 				return _changeVibrateCommand ?? (_changeVibrateCommand = new DelegateCommand ((obj) => {
-					DoVibro = !DoVibro;
+					VibroOff = !VibroOff;
 				}));
 			}
 		}

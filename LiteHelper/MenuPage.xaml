@@ -68,7 +68,7 @@
 						<RowDefinition Height="40"/>
 					</Grid.RowDefinitions>
 
-					<Switch Grid.Row="0" Grid.Column="1" IsToggled="{Binding DoVibro}" VerticalOptions="Center" HorizontalOptions="End"/>
+					<Switch Grid.Row="0" Grid.Column="1" IsToggled="{Binding VibroOff, Converter={StaticResource CnvBlInvert}}" VerticalOptions="Center" HorizontalOptions="End"/>
 					<Label TextColor="Black" Grid.Row="0" Text="Вибрация клавиш" Grid.Column="0" HorizontalTextAlignment="Start" HorizontalOptions="Start" VerticalOptions="Center"/>
 					<Button Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" BackgroundColor="Transparent" Command="{Binding ChangeVibrateCommand}" />
 

@@ -56,7 +56,7 @@ namespace LiteHelper.Droid.Renderers
 			Element.CancelAllAnimations ();
 			cts = new CancellationTokenSource ();
 
-			if (Utils.DoVibro) {
+			if (!Utils.VibroOff) {
 				MainActivity.Current.Vibrator.Vibrate (30);
 			}
 
