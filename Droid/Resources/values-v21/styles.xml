@@ -24,6 +24,7 @@
 	    <item name="android:colorLongPressedHighlight">#ffffff</item>
 	    <item name="android:colorFocusedHighlight">#ffffff</item>
 	    <item name="android:colorActivatedHighlight">#ffffff</item>
+		<item name="android:textCursorDrawable">@null</item>
 	</style>
 	<style name="AppCompatDialogStyle" parent="Theme.AppCompat.Light.Dialog">
 		<item name="colorAccent">#F07810</item>

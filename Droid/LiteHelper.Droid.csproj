@@ -157,10 +157,6 @@
     <AndroidResource Include="Resources\layout\Tabbar.axml" />
     <AndroidResource Include="Resources\layout\Toolbar.axml" />
     <AndroidResource Include="Resources\values\styles.xml" />
-    <AndroidResource Include="Resources\drawable\logo.png" />
-    <AndroidResource Include="Resources\drawable-hdpi\icon.png" />
-    <AndroidResource Include="Resources\drawable-xhdpi\icon.png" />
-    <AndroidResource Include="Resources\drawable-xxhdpi\icon.png" />
     <AndroidResource Include="Resources\drawable-hdpi\refresh.png" />
     <AndroidResource Include="Resources\drawable-xhdpi\refresh.png" />
     <AndroidResource Include="Resources\drawable-xxhdpi\refresh.png" />
@@ -207,6 +203,10 @@
     <AndroidResource Include="Resources\drawable\cutted_splash_screen.xml" />
     <AndroidResource Include="Resources\values\strings.xml" />
     <AndroidResource Include="Resources\values-v21\strings.xml" />
+    <AndroidResource Include="Resources\drawable-hdpi\icon.png" />
+    <AndroidResource Include="Resources\drawable-xhdpi\icon.png" />
+    <AndroidResource Include="Resources\drawable-xxhdpi\icon.png" />
+    <AndroidResource Include="Resources\drawable\logo.png" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Resources\drawable-xxxhdpi\" />
