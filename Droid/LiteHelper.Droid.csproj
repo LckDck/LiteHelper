@@ -146,6 +146,7 @@
     <Compile Include="InterfaceImplementation\InAppPurchase.cs" />
     <Compile Include="InterfaceImplementation\TimerInstance.cs" />
     <Compile Include="Renderers\CommonEntryRenderer.cs" />
+    <Compile Include="Renderers\MyMasterDetailPageRenderer.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\AboutResources.txt" />
