@@ -16,6 +16,7 @@ using LiteHelper.Interfaces;
 using LiteHelper.Managers;
 using CrashlyticsKit;
 using FabricSdk;
+using Android.Gms.Ads;
 
 namespace LiteHelper.Droid
 {
@@ -58,6 +59,7 @@ namespace LiteHelper.Droid
 
 			ServiceLocator.SetLocatorProvider (() => new AutofacServiceLocator (container));
 
+			MobileAds.Initialize (ApplicationContext, "ca-app-pub-9132934287753769~2766954331");
 
 			_iInAppPurchase = ServiceLocator.Current.GetInstance<IInAppPurchase> () as InAppPurchase;
 			LoadApplication (new App ());

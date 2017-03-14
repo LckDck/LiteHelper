@@ -63,6 +63,7 @@
 				<RowDefinition Height="40"/>
 				<RowDefinition Height="40"/>
 				<RowDefinition Height="40"/>
+				<RowDefinition Height="Auto"/>
 			</Grid.RowDefinitions>
 			<Grid.ColumnDefinitions>
 				<ColumnDefinition Width="*"/>
@@ -90,6 +91,8 @@
 			<Button Grid.Row="2" Grid.Column="3" BackgroundColor="#F07810" Text="9" TextColor="Black" FontAttributes="Bold" Command="{Binding _8_Command}"/>
 			<Button Grid.Row="2" Grid.Column="4" BackgroundColor="#F07810" Text="0" TextColor="Black" FontAttributes="Bold" Command="{Binding _9_Command}"/>
 			<Button Grid.Row="2" Grid.Column="5" BackgroundColor="#F07810" Text="Send" TextColor="Black" FontAttributes="Bold" Command="{Binding SendCommand}"/>
+
+			<controls:AdView Grid.Row="3" HeightRequest="50" Grid.ColumnSpan="6" IsVisible="{Binding Paid, Converter={StaticResource CnvBlInvert}}"/>
 		</Grid>
 	</Grid>
 </controls:BasePage>

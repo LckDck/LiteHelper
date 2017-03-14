@@ -83,6 +83,7 @@
     <Compile Include="Controls\CustomEntry.cs" />
     <Compile Include="Managers\CodeManager.cs" />
     <Compile Include="Controls\BasePage.cs" />
+    <Compile Include="Controls\AdView.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="HtmlAgilityPack">
