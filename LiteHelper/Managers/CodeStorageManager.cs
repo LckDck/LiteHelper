@@ -12,7 +12,7 @@ namespace LiteHelper.Managers
 		IInternalStorage _storage;
 		List<CodeInfo> _codes = new List<CodeInfo>();
 		DateTime Beginning = new DateTime (1970, 1, 1);
-		public int  CodesLimit = 10;
+		public int  CodesLimit = 20;
 
 		public List<CodeInfo> Codes { 
 			get {

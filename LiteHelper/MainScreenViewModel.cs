@@ -198,9 +198,10 @@ namespace LiteHelper
 					if (!String.IsNullOrEmpty (Code)) {
 						_codeStorageManager.AddCode (Code, Constants.CodeStatusSending);
 						IsLoading = true;
-						var result = await SendCode (Code);
-
-						if (result != Constants.CodeStatusWrong) {
+						var code = Code;
+						var result = await SendCode (code);
+						var status = GetStatusFor (code, result);
+						if (status != Constants.CodeStatusWrong) {
 							Utils.LastSelection = 0;
 							Code = string.Empty;
 						}
@@ -285,7 +286,7 @@ namespace LiteHelper
 					return status;
 				}
 			}
-			return "Код не принят. Движок неактивен.";
+			return "Игра с данным PIN-кодом не найдена/неактивна.";
 		}
 
 		NativeMessageHandler _requestHandler;
