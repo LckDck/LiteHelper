@@ -84,6 +84,8 @@
     <Compile Include="Managers\CodeManager.cs" />
     <Compile Include="Controls\BasePage.cs" />
     <Compile Include="Controls\AdView.cs" />
+    <Compile Include="Controls\LongClickButton.cs" />
+    <Compile Include="Controls\DragableWebView.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="HtmlAgilityPack">

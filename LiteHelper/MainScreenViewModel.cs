@@ -127,9 +127,11 @@ namespace LiteHelper
 
 		void ChangeCode (object sender, CodeEventArgs e)
 		{
-			Code = e.Code;
-			Utils.LastSelection = Code.Length;
-			StatusText = string.Empty;
+			Device.BeginInvokeOnMainThread (() => {
+				Code = e.Code;
+				Utils.LastSelection = Code.Length;
+				StatusText = string.Empty;
+			});
 		}
 
 		async void Load (string html = null)
@@ -332,9 +334,12 @@ namespace LiteHelper
 		public ICommand ClearCommand {
 			get {
 				return _clearCommand ?? (_clearCommand = new DelegateCommand ((obj) => {
-					Utils.LastSelection = 0;
-					Code = String.Empty;
-					StatusText = String.Empty;
+					Device.BeginInvokeOnMainThread (() => {
+
+						Utils.LastSelection = 0;
+						Code = String.Empty;
+						StatusText = String.Empty;
+					});
 
 				}));
 			}
@@ -344,9 +349,14 @@ namespace LiteHelper
 		public ICommand BackspaceCommand {
 			get {
 				return _backspaceCommand ?? (_backspaceCommand = new DelegateCommand ((obj) => {
-					if (Code.Length == 0) return;
-					Utils.LastSelection--;
-					Code = Code.Remove (Utils.LastSelection, 1);
+
+					Device.BeginInvokeOnMainThread (() => {
+
+						if (Code.Length == 0) return;
+
+						Utils.LastSelection--;
+						Code = Code.Remove (Utils.LastSelection, 1);
+					});
 
 
 				}));
@@ -627,7 +637,7 @@ namespace LiteHelper
 		}
 
 
-		private string CityCode { 
+		public string CityCode { 
 			get {
 				string code;
 				Constants.CityList.TryGetValue (SelectedCity, out code);

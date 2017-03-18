@@ -10,6 +10,7 @@ namespace LiteHelper
 {
 	public partial class LiteHelperPage : BasePage
 	{
+		MainScreenViewModel _bc;
 		public LiteHelperPage ()
 		{
 			InitializeComponent ();
@@ -26,6 +27,7 @@ namespace LiteHelper
 			WebView.Navigating += OnNavigating;
 			StatusLabel.PropertyChanged += OnStatusLabelPropertyChanged;
 			if (!_inited) {
+				_bc = BindingContext as MainScreenViewModel;
 				_initialHeight = topRow.Height.Value;
 				_inited = true;
 			}
@@ -35,8 +37,8 @@ namespace LiteHelper
 		protected override void OnDisappearing ()
 		{
 			base.OnDisappearing ();
-			WebView.Navigating += OnNavigating;
-			StatusLabel.PropertyChanged += OnStatusLabelPropertyChanged;
+			WebView.Navigating -= OnNavigating;
+			StatusLabel.PropertyChanged -= OnStatusLabelPropertyChanged;
 		}
 
 		void OnStatusLabelPropertyChanged (object sender, PropertyChangedEventArgs e)
@@ -48,7 +50,13 @@ namespace LiteHelper
 
 		void OnNavigating (object sender, WebNavigatingEventArgs e)
 		{
-			if (e.Url.StartsWith ("http")) {
+
+			var engineUrl = Constants.GetHtmlUrl (_bc.CityCode, _bc.Code);
+			if (e.Url.StartsWith (engineUrl)) {
+				
+				_bc.RefreshCommand.Execute (null);
+				
+			}else if (e.Url.StartsWith ("http")) {
 				try {
 					var uri = new Uri (e.Url);
 					Device.OpenUri (uri);

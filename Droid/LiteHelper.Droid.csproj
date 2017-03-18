@@ -154,6 +154,7 @@
     <Compile Include="Renderers\CommonEntryRenderer.cs" />
     <Compile Include="Renderers\MyMasterDetailPageRenderer.cs" />
     <Compile Include="Renderers\AdViewRenderer.cs" />
+    <Compile Include="Renderers\LongClickButtonRenderer.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\AboutResources.txt" />

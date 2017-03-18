@@ -78,7 +78,7 @@
 			<Button Grid.Row="0" Grid.Column="2" BackgroundColor="#F07810" Text="{Binding Prefix3}" TextColor="Black" FontAttributes="Bold" Command="{Binding _0_2_Command}"/>
 			<Button Grid.Row="0" Grid.Column="3" BackgroundColor="#F07810" Text="{Binding Prefix4}" TextColor="Black" FontAttributes="Bold" Command="{Binding _0_3_Command}"/>
 			<Button Grid.Row="0" Grid.Column="4" BackgroundColor="#F07810" Text="{Binding Prefix5}" TextColor="Black" FontAttributes="Bold" Command="{Binding _0_4_Command}"/>
-			<Button Grid.Row="0" Grid.Column="5" BackgroundColor="#F07810" Command="{Binding BackspaceCommand}" Image="ic_keyboard_backspace_black_24dp.png"/>
+			<controls:LongClickButton Grid.Row="0" Grid.Column="5" BackgroundColor="#F07810" Command="{Binding BackspaceCommand}" Image="ic_keyboard_backspace_black_24dp.png" LongClickCommand="{Binding ClearCommand}"/>
 			<Button Grid.Row="1" Grid.Column="0" BackgroundColor="#F07810" Text="1" TextColor="Black" FontAttributes="Bold" Command="{Binding _0_Command}"/>
 			<Button Grid.Row="1" Grid.Column="1" BackgroundColor="#F07810" Text="2" TextColor="Black" FontAttributes="Bold" Command="{Binding _1_Command}"/>
 			<Button Grid.Row="1" Grid.Column="2" BackgroundColor="#F07810" Text="3" TextColor="Black" FontAttributes="Bold" Command="{Binding _2_Command}"/>
