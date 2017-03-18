@@ -8,7 +8,7 @@ using Xamarin.Forms.Platform.Android;
 [assembly: ExportRenderer (typeof (LongClickButton), typeof (LongClickButtonRenderer))]
 namespace LiteHelper.Droid.Renderers
 {
-	public class LongClickButtonRenderer : ButtonRenderer
+	public class LongClickButtonRenderer : FlatButtonRenderer
 	{
 
 		protected override void OnElementChanged (ElementChangedEventArgs<Button> e)
