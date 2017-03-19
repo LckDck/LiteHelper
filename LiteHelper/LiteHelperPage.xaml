@@ -37,7 +37,6 @@
 			
 			<Grid.RowDefinitions>
 					<RowDefinition Height="35"/>
-					<RowDefinition Height="35"/>
 					<RowDefinition Height="*"/>
 
 				</Grid.RowDefinitions>
@@ -46,18 +45,17 @@
 					<ColumnDefinition Width="35"/>
 				</Grid.ColumnDefinitions>
 
-			<controls:ExtendedWebView Grid.RowSpan="3" Grid.Column="0" Source="{Binding CodesInfo}"/>
-			<Button Image="refresh.png" Grid.Row="0" Grid.Column="1" Command="{Binding RefreshCommand}" Margin="2,2,2,5" BackgroundColor="#F07810" HorizontalOptions="End" VerticalOptions="Start"/>
-			<Button Image="history.png" Grid.Row="1" Grid.Column="1" Command="{Binding ShowHistoryCommand}" Margin="2,5,2,2" BackgroundColor="#F07810" HorizontalOptions="End" VerticalOptions="Start"/>
+			<controls:ExtendedWebView Grid.Column="0" Source="{Binding CodesInfo}"/>
+			<Button Image="history.png" Grid.Row="0" Grid.Column="1" Command="{Binding ShowHistoryCommand}" Margin="2,2,2,2" BackgroundColor="#F07810" HorizontalOptions="End" VerticalOptions="Start"/>
 		</Grid>
 
 		<BoxView Grid.Row="4" BackgroundColor="Black"/>
 		
-		<Grid Grid.Row="5" ColumnSpacing="0" Margin="0,0,0,6">
-			<ActivityIndicator IsVisible="{Binding IsLoading}" IsRunning="true" VerticalOptions="Start" HorizontalOptions="Center" Margin="0,15,0,0"/>
-			<WebView x:Name="WebView" IsVisible="{Binding IsLoading, Converter={StaticResource CnvBlInvert}}" Source="{Binding Source}"/>
-		</Grid>
 
+		<controls:PullToRefreshLayout Grid.Row="5" Margin="0,0,0,6" RefreshCommand="{Binding RefreshCommand}" RefreshColor="#F07810" IsRefreshing="{Binding IsLoading}">
+			<WebView x:Name="WebView" IsVisible="{Binding IsLoading, Converter={StaticResource CnvBlInvert}}" Source="{Binding Source}"/>
+		</controls:PullToRefreshLayout>
+		
 		<Grid RowSpacing="1" ColumnSpacing="1" Grid.Row="6" Padding="2,-2,2,2" VerticalOptions="End">
 			<Grid.RowDefinitions>
 				<RowDefinition Height="40"/>

@@ -27,8 +27,6 @@ namespace LiteHelper.Droid.Renderers
 
 			adView.LayoutParameters = adParams;
 
-			string android_id = Settings.Secure.GetString (Context.ContentResolver, Settings.Secure.AndroidId);
-			
 			adView.LoadAd (new AdRequest.Builder ().Build ());
 			return adView;
 		}

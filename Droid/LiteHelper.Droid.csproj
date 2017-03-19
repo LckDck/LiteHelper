@@ -155,6 +155,7 @@
     <Compile Include="Renderers\MyMasterDetailPageRenderer.cs" />
     <Compile Include="Renderers\AdViewRenderer.cs" />
     <Compile Include="Renderers\LongClickButtonRenderer.cs" />
+    <Compile Include="Renderers\PullToRefreshLayoutRenderer.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\AboutResources.txt" />
@@ -166,10 +167,6 @@
     <AndroidResource Include="Resources\layout\Tabbar.axml" />
     <AndroidResource Include="Resources\layout\Toolbar.axml" />
     <AndroidResource Include="Resources\values\styles.xml" />
-    <AndroidResource Include="Resources\drawable-hdpi\refresh.png" />
-    <AndroidResource Include="Resources\drawable-xhdpi\refresh.png" />
-    <AndroidResource Include="Resources\drawable-xxhdpi\refresh.png" />
-    <AndroidResource Include="Resources\drawable-xxxhdpi\refresh.png" />
     <AndroidResource Include="Resources\drawable-xxxhdpi\icon.png" />
     <AndroidResource Include="Resources\drawable-hdpi\ic_keyboard_backspace_black_24dp.png" />
     <AndroidResource Include="Resources\drawable-xhdpi\ic_keyboard_backspace_black_24dp.png" />
@@ -180,18 +177,6 @@
     <AndroidResource Include="Resources\drawable-xhdpi\history.png" />
     <AndroidResource Include="Resources\drawable-xxhdpi\history.png" />
     <AndroidResource Include="Resources\drawable-xxxhdpi\history.png" />
-    <AndroidResource Include="Resources\drawable-hdpi\close.png" />
-    <AndroidResource Include="Resources\drawable-xhdpi\close.png" />
-    <AndroidResource Include="Resources\drawable-xxhdpi\close.png" />
-    <AndroidResource Include="Resources\drawable-xxxhdpi\close.png" />
-    <AndroidResource Include="Resources\drawable-hdpi\ic_delete_sweep.png" />
-    <AndroidResource Include="Resources\drawable-xhdpi\ic_delete_sweep.png" />
-    <AndroidResource Include="Resources\drawable-xxhdpi\ic_delete_sweep.png" />
-    <AndroidResource Include="Resources\drawable-xxxhdpi\ic_delete_sweep.png" />
-    <AndroidResource Include="Resources\drawable-hdpi\ic_arrow_left.png" />
-    <AndroidResource Include="Resources\drawable-xhdpi\ic_arrow_left.png" />
-    <AndroidResource Include="Resources\drawable-xxhdpi\ic_arrow_left.png" />
-    <AndroidResource Include="Resources\drawable-xxxhdpi\ic_arrow_left.png" />
     <AndroidResource Include="Resources\drawable-hdpi\mail.png" />
     <AndroidResource Include="Resources\drawable-xhdpi\mail.png" />
     <AndroidResource Include="Resources\drawable-xxhdpi\mail.png" />
