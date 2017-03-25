@@ -78,12 +78,12 @@ namespace LiteHelper
 			if (isConnected) {
 				StartResend ();
 			} else {
-				CancelLoad ();
+				CancelResend ();
 			}
 		}
 
 
-		void CancelLoad () { 
+		void CancelResend () { 
 			Debug.WriteLine ("Cancel Resend");
 			if (cts != null) {
 				cts.Cancel ();
@@ -103,7 +103,7 @@ namespace LiteHelper
 			if (codeToResend == null) {
 				return;
 			}
-			CancelLoad ();
+			CancelResend ();
 			Debug.WriteLine ("Start Resend");
 			cts = new CancellationTokenSource ();
 
@@ -134,25 +134,49 @@ namespace LiteHelper
 			});
 		}
 
-		async void Load (string html = null)
-		{
-			IsLoading = true;
-			Source = null;
 
-			if (html == null) {
-				using (var httpClient = new HttpClient ()) {
-					try {
-						html = await httpClient.GetStringAsync (Constants.GetHtmlUrl (CityCode, PIN));
-					} catch (Exception e) {
-						Debug.WriteLine (e.Message);
-						html = Constants.NoNetwork;
-					}
-					StatusText = string.Empty;
-				}
+		private void CancelLoad () { 
+			if (_loadCts != null) {
+				_loadCts.Cancel ();
+				_loadCts = null;
+				IsLoading = false;
 			}
-			Source = Constants.GetHtmlUrl (CityCode ,PIN);
-			UpdateCodesInfo (html);
-			IsLoading = false;
+
+			if (_sendCts != null) {
+				_sendCts.Cancel ();
+				_sendCts = null;
+				IsLoading = false;
+			}
+		}
+
+		CancellationTokenSource _loadCts;
+
+		void Load (string html = null)
+		{
+
+			CancelLoad ();
+
+			_loadCts = new CancellationTokenSource ();
+			Task.Run (async () => {
+
+				IsLoading = true;
+				Source = null;
+
+				if (html == null) {
+					using (var httpClient = new HttpClient ()) {
+						try {
+							html = await httpClient.GetStringAsync (Constants.GetHtmlUrl (CityCode, PIN));
+						} catch (Exception e) {
+							Debug.WriteLine (e.Message);
+							html = Constants.NoNetwork;
+						}
+						StatusText = string.Empty;
+					}
+				}
+				Source = Constants.GetHtmlUrl (CityCode ,PIN);
+				UpdateCodesInfo (html);
+				IsLoading = false;
+			}, _loadCts.Token);
 		}
 
 
@@ -192,25 +216,38 @@ namespace LiteHelper
 			}
 		}
 
+		CancellationTokenSource _sendCts;
 
 		ICommand _sendCommand;
 		public ICommand SendCommand {
 			get {
-				return _sendCommand ?? (_sendCommand = new DelegateCommand (async (obj) => {
+				return _sendCommand ?? (_sendCommand = new DelegateCommand ( (obj) => {
 					if (!String.IsNullOrEmpty (Code)) {
 						_codeStorageManager.AddCode (Code, Constants.CodeStatusSending);
-						IsLoading = true;
-						var code = Code;
-						var result = await SendCode (code);
-						var status = GetStatusFor (code, result);
-						if (status != Constants.CodeStatusWrong) {
-							Utils.LastSelection = 0;
-							Code = string.Empty;
+
+
+						CancelLoad ();
+
+
+						_sendCts = new CancellationTokenSource ();
+
+						try {
+							Task.Run (async () => {
+
+								IsLoading = true;
+								var code = Code;
+								Utils.LastSelection = 0;
+								Code = string.Empty;
+								var result = await SendCode (code);
+								if (_sendCts == null) {
+									return;
+								}
+
+								Refresh (result);
+							}, _sendCts.Token);
+						} catch (Exception e) {
+							System.Diagnostics.Debug.WriteLine (e.Message);
 						}
-
-
-
-						Refresh (result);
 					}
 
 				}));
@@ -228,7 +265,7 @@ namespace LiteHelper
 					var body = await response.Content.ReadAsStringAsync ();
 					var status = GetStatusFor (code, body);
 					_codeStorageManager.AddCode (code, status);
-					if (!inBackground) {
+					if (!inBackground && _sendCts != null) {
 						UpdateCodesInfo (body);
 						StatusText = status;
 					}
@@ -271,6 +308,14 @@ namespace LiteHelper
 				return prefix + substring + postfix;
 			}
 
+			return prefix + 
+				"a\nb\nc\ns\ns\nasdf\nasd\nasdfn\nsd\nsd\nsdf\nsddf\nd\nlas;dkfasjd; lkkkkkkkkkkkkk kkkkkkkkkkkkkkkkk kkkkj jjjjjjj jjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjj" +
+				"klllllllllll lllllllllllll llllllllll llllllllllllllllllllllll llllllllllll lllllllllllllllll llllll llllllllllllllllllllllllllllll lllllllllllllllllllllllllllllll" +
+				"nnmnnnnn nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm mmmmmmm" +
+				",........ ..........................................................." +
+				".,,,,,,,,, ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,mmmmmmmlllllljjjj"
+				+ postfix;
+
 			return prefix + "Нет информации о кодах" + postfix;
 		}
 
@@ -296,7 +341,7 @@ namespace LiteHelper
 		{
 			_requestHandler = new NativeMessageHandler ();
 			var client = new HttpClient (_requestHandler) {
-				Timeout = new TimeSpan (0, 0, 10)
+				Timeout = new TimeSpan (0, 0, 60)
 			};
 			client.DefaultRequestHeaders.Accept.Clear ();
 			client.DefaultRequestHeaders.Accept.Add (new MediaTypeWithQualityHeaderValue ("application/x-www-form-urlencoded"));
@@ -355,6 +400,8 @@ namespace LiteHelper
 						if (Code.Length == 0) return;
 
 						Utils.LastSelection--;
+
+						var index = (Utils.LastSelection >= 0) ? Utils.LastSelection : 0;
 						Code = Code.Remove (Utils.LastSelection, 1);
 					});
 
@@ -400,9 +447,12 @@ namespace LiteHelper
 		}
 
 		private void ChangeCode (string diff) {
+			CancelLoad ();
 			var selectBefore = Utils.LastSelection;
 			Utils.LastSelection += diff.Length;
-			Code = Code.Insert (selectBefore, diff);
+			if (selectBefore > Code.Length) selectBefore = Code.Length;
+
+			Code = Code.Insert (selectBefore, diff).ToUpper();
 		}
 
 		public string CodePlaceholder {

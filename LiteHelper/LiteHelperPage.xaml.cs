@@ -31,6 +31,10 @@ namespace LiteHelper
 				_initialHeight = topRow.Height.Value;
 				_inited = true;
 			}
+
+			if (StatusLabel.Text == string.Empty) { 
+				AnimateRow (StatusLabel.Text == String.Empty);
+			}
 		}
 
 

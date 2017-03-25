@@ -44,7 +44,7 @@ namespace LiteHelper.Droid.Renderers
 			}
 
 			if (e.EventTime == StrangeEventTime) {
-				Control.SetSelection (Utils.LastSelection);
+				SetSelection ();
 				ClearFocus ();
 			} else {
 				Utils.LastSelection = Control.SelectionStart;
@@ -58,7 +58,7 @@ namespace LiteHelper.Droid.Renderers
 			if (!hasFocus) {
 				Control.Activated = true;
 				Control.Pressed = true;
-				Control.SetSelection (Utils.LastSelection);
+				SetSelection ();
 				System.Diagnostics.Debug.WriteLine ("OnFocusChange");
 			} else { 
 				var imm = (InputMethodManager)v.Context.GetSystemService (Android.Content.Context.InputMethodService);
@@ -68,6 +68,11 @@ namespace LiteHelper.Droid.Renderers
 			}
 		}
 
+		void SetSelection () { 
+			var selection = System.Math.Min (Control.Text.Length, Utils.LastSelection);
+			Utils.LastSelection = selection;
+			Control.SetSelection (Utils.LastSelection);
+		}
 
 		public override bool DispatchTouchEvent (MotionEvent ev)
 		{
