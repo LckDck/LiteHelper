@@ -40,7 +40,7 @@ namespace LiteHelper
 			_codeStorageManager = ServiceLocator.Current.GetInstance<CodeStorageManager> ();
 			_cityNames = new List<string> (Constants.CityList.Keys);
 			var savedPin = _storage.RetrieveString (Constants.Pin);
-			PIN = (string.IsNullOrEmpty(savedPin)) ? "1111111" : savedPin;
+			PIN = (string.IsNullOrEmpty(savedPin)) ? Constants.DefaultPin : savedPin;
 
 			var savedCity = _storage.RetrieveString (Constants.City);
 
@@ -175,6 +175,10 @@ namespace LiteHelper
 				}
 				Source = Constants.GetHtmlUrl (CityCode ,PIN);
 				UpdateCodesInfo (html);
+				var status = GetStatusFor (html);
+				if (status != Constants.DefaultStatus && _loadCts != null) {
+					StatusText = status;
+				}
 				IsLoading = false;
 			}, _loadCts.Token);
 		}
@@ -192,6 +196,13 @@ namespace LiteHelper
 		}
 
 
+		public bool HasDefaultPin { 
+			get {
+				return PIN == Constants.DefaultPin;
+			}
+		}
+
+
 		string _pin;
 		public string PIN {
 			get {
@@ -201,6 +212,7 @@ namespace LiteHelper
 			set {
 				_pin = value;
 				RaisePropertyChanged (() => PIN);
+				RaisePropertyChanged (() => HasDefaultPin);
 			}
 		}
 
@@ -263,7 +275,7 @@ namespace LiteHelper
 			try {
 				using (var response = await client.PostAsync (url, content)) {
 					var body = await response.Content.ReadAsStringAsync ();
-					var status = GetStatusFor (code, body);
+					var status = GetStatusFor (body);
 					_codeStorageManager.AddCode (code, status);
 					if (!inBackground && _sendCts != null) {
 						UpdateCodesInfo (body);
@@ -308,18 +320,10 @@ namespace LiteHelper
 				return prefix + substring + postfix;
 			}
 
-			return prefix + 
-				"a\nb\nc\ns\ns\nasdf\nasd\nasdfn\nsd\nsd\nsdf\nsddf\nd\nlas;dkfasjd; lkkkkkkkkkkkkk kkkkkkkkkkkkkkkkk kkkkj jjjjjjj jjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjj" +
-				"klllllllllll lllllllllllll llllllllll llllllllllllllllllllllll llllllllllll lllllllllllllllll llllll llllllllllllllllllllllllllllll lllllllllllllllllllllllllllllll" +
-				"nnmnnnnn nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm mmmmmmm" +
-				",........ ..........................................................." +
-				".,,,,,,,,, ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,mmmmmmmlllllljjjj"
-				+ postfix;
-
 			return prefix + "Нет информации о кодах" + postfix;
 		}
 
-		string GetStatusFor (string code, string html)
+		string GetStatusFor (string html)
 		{
 			var errorBegin = "<!--errorText--><p><strong>";
 			var errorEnd = "</strong></p><!--errorTextEnd-->";
@@ -333,7 +337,7 @@ namespace LiteHelper
 					return status;
 				}
 			}
-			return "Игра с данным PIN-кодом не найдена/неактивна.";
+			return Constants.DefaultStatus;
 		}
 
 		NativeMessageHandler _requestHandler;

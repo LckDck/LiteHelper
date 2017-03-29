@@ -19,6 +19,6 @@ namespace LiteHelper
 		public static string _6_Text = "7";
 		public static string _7_Text = "8";
 		public static string _8_Text = "9";
-		public static string _9_Text = "10";
+		public static string _9_Text = "0";
 	}
 }

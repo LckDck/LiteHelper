@@ -139,7 +139,9 @@ namespace LiteHelper
 
 		public static string SupportEmail = "cuckooshka.kgd@gmail.com";
 
+		public static string DefaultPin = "1111111";
 
+		public static string DefaultStatus = "Игра с данным PIN-кодом не найдена/неактивна.";
 
 		internal static string GetHtmlUrl (string cityCode, string pin)
 		{
