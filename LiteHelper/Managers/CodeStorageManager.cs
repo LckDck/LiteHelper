@@ -26,7 +26,8 @@ namespace LiteHelper.Managers
 		}
 
 		public void Init () {
-			var json = _storage.RetrieveString (Constants.Codes);
+			var json = _storage.RetrieveString (Constants.Codes) ?? string.Empty;
+
 			var list = JsonConvert.DeserializeObject<List<CodeInfo>> (json);
 			if (list != null) {
 				_codes = list;

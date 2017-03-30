@@ -46,5 +46,11 @@ namespace LiteHelper.iOS.InterfaceImplementation
 			defaults.RemoveObject (key);
 			defaults.Synchronize ();
 		}
+
+		public bool RetrieveBool (string key)
+		{
+			var defaults = NSUserDefaults.StandardUserDefaults;
+			return defaults.BoolForKey (key);
+		}
 	}
 }

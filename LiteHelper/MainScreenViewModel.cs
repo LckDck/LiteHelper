@@ -35,7 +35,9 @@ namespace LiteHelper
 		public MainScreenViewModel ()
 		{
 			_storage = ServiceLocator.Current.GetInstance<IInternalStorage> ();
-			_inapp = ServiceLocator.Current.GetInstance<IInAppPurchase> ();
+			if (Device.RuntimePlatform == Device.Android) {
+				_inapp = ServiceLocator.Current.GetInstance<IInAppPurchase> ();
+			}
 			_codeManager = ServiceLocator.Current.GetInstance<CodeManager> ();
 			_codeStorageManager = ServiceLocator.Current.GetInstance<CodeStorageManager> ();
 			_cityNames = new List<string> (Constants.CityList.Keys);
@@ -61,9 +63,11 @@ namespace LiteHelper
 
 			_codeManager.ChangeCode += ChangeCode;
 			_codeStorageManager.ConnectedChanged += ConnectedChanged;
-			Paid = _storage.RetrieveBool (Constants.Paid);
+			Paid = (Device.RuntimePlatform != Device.Android) || _storage.RetrieveBool (Constants.Paid);
 			Load ();
-			LoadProducts ();
+			if (Device.RuntimePlatform == Device.Android) {
+				LoadProducts ();
+			}
 		}
 
 		public override void OnNavigatingFrom ()

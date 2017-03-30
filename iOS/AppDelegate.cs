@@ -1,9 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿
+
 using Autofac;
 using Autofac.Extras.CommonServiceLocator;
 using Foundation;
+using LiteHelper.Interfaces;
 using LiteHelper.iOS.InterfaceImplementation;
 using LiteHelper.Managers;
 using Microsoft.Practices.ServiceLocation;
@@ -17,19 +17,29 @@ namespace LiteHelper.iOS
 		public override bool FinishedLaunching (UIApplication app, NSDictionary options)
 		{
 			global::Xamarin.Forms.Forms.Init ();
-
 			var builder = new ContainerBuilder ();
 
 			builder.RegisterType<CodeStorageManager> ().InstancePerLifetimeScope ();
 
 			builder.RegisterInstance (new InternalStorage ())
 				   .As<IInternalStorage> ();
+
+			builder.RegisterType<CodeManager> ().InstancePerLifetimeScope ();
+
+			builder.RegisterInstance (new ResourceManager ())
+				   .As<IResourceManager> ();
+
+
+			builder.RegisterInstance (new TimerInstance ())
+				   .As<ITimerInstance> ();
 			var container = builder.Build ();
 
 			ServiceLocator.SetLocatorProvider (() => new AutofacServiceLocator (container));
 			LoadApplication (new App ());
 
-			return base.FinishedLaunching (app, options);
+			var result = base.FinishedLaunching (app, options);
+			UIApplication.SharedApplication.KeyWindow.TintColor =  UIColor.Gray;
+			return result;
 		}
 	}
 }
