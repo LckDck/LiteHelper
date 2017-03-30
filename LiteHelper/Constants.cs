@@ -67,6 +67,7 @@ namespace LiteHelper
 			{"Гамбург", "hamburg"},
 			{"Димитровград", "dimitrovgrad"},
 			{"Димитров", "dmitrov"},
+			{"Донецк", "donetsk"},
 			{"Дубна", "dubna"},
 			{"Екатеринбург", "e-burg"},
 			{"Запорожье", "zp"},
