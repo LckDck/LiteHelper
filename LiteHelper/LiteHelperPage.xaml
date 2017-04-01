@@ -53,7 +53,7 @@
 		
 
 		
-		<controls:PullToRefreshLayout Grid.Row="5" Margin="0,0,0,6" RefreshCommand="{Binding RefreshCommand}" RefreshColor="#F07810" IsRefreshing="{Binding IsLoading}">
+		<controls:PullToRefreshLayout Grid.Row="5" Margin="0,0,0,6" RefreshCommand="{Binding RefreshCommand}" IsPullToRefreshEnabled="{Binding RefreshEnabled}" RefreshColor="#F07810" IsRefreshing="{Binding IsLoading}">
 			<Grid>
 				<WebView x:Name="WebView" IsVisible="{Binding IsLoading, Converter={StaticResource CnvBlInvert}}" Source="{Binding Source}"/>
 				<Button BackgroundColor="Black" Margin="20,0,20,0" VerticalOptions="Center" IsVisible="{Binding HasDefaultPin}" Opacity="0.5" HeightRequest="100" InputTransparent="true" IsEnabled="false"/>

@@ -146,13 +146,16 @@ namespace LiteHelper
 
 		internal static string GetHtmlUrl (string cityCode, string pin)
 		{
-			return $"http://lite.dzzzr.ru/{cityCode}/go/?pin={pin}";
+			return UrlBeginning(cityCode) + $"/go/?pin={pin}";
 		}
 
+		internal static string UrlBeginning (string cityCode){ 
+			return $"http://lite.dzzzr.ru/{cityCode}";
+		}
 
 		internal static string GetSendCodeUrl (string cityCode, string pin)
 		{
-			return $"http://lite.dzzzr.ru/{cityCode}/go/?pin={pin}";
+			return UrlBeginning (cityCode) + $"/go/?pin={pin}";
 		}
 	}
 }

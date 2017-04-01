@@ -149,6 +149,7 @@
     <Compile Include="InterfaceImplementation\ResourceManager.cs" />
     <Compile Include="Renderers\ExtendedSwitchRenderer.cs" />
     <Compile Include="Colors.cs" />
+    <Compile Include="Renderers\CustomEnrtyRenderer.cs" />
   </ItemGroup>
   <ItemGroup>
     <BundleResource Include="Resources\refresh%402x.png" />

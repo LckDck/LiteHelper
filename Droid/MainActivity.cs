@@ -44,6 +44,7 @@ namespace LiteHelper.Droid
 
 			builder.RegisterType<CodeStorageManager> ().InstancePerLifetimeScope ();
 			builder.RegisterType<CodeManager> ().InstancePerLifetimeScope ();
+			builder.RegisterType<RefreshManager> ().InstancePerLifetimeScope ();
 
 			builder.RegisterInstance (new ResourceManager ())
 				   .As<IResourceManager> ();

@@ -87,6 +87,7 @@
     <Compile Include="Controls\LongClickButton.cs" />
     <Compile Include="Controls\DragableWebView.cs" />
     <Compile Include="Controls\PullToRefreshLayout.cs" />
+    <Compile Include="Managers\RefreshManager.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="HtmlAgilityPack">

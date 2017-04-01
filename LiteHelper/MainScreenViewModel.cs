@@ -32,6 +32,8 @@ namespace LiteHelper
 
 		CodeManager _codeManager;
 
+		RefreshManager _refreshManager;
+
 		public MainScreenViewModel ()
 		{
 			_storage = ServiceLocator.Current.GetInstance<IInternalStorage> ();
@@ -39,6 +41,7 @@ namespace LiteHelper
 				_inapp = ServiceLocator.Current.GetInstance<IInAppPurchase> ();
 			}
 			_codeManager = ServiceLocator.Current.GetInstance<CodeManager> ();
+			_refreshManager = ServiceLocator.Current.GetInstance<RefreshManager> ();
 			_codeStorageManager = ServiceLocator.Current.GetInstance<CodeStorageManager> ();
 			_cityNames = new List<string> (Constants.CityList.Keys);
 			var savedPin = _storage.RetrieveString (Constants.Pin);
@@ -60,14 +63,19 @@ namespace LiteHelper
 			var savedKey5 = _storage.RetrieveString (Constants.Key5);
 			Prefix5 = (string.IsNullOrEmpty (savedKey5)) ? Keyboard._0_4_Text : savedKey5;
 			Code = string.Empty;
-
+			RefreshEnabled = true;
 			_codeManager.ChangeCode += ChangeCode;
+			_refreshManager.ScrollChanged += OnSrollChanged;
 			_codeStorageManager.ConnectedChanged += ConnectedChanged;
 			Paid = (Device.RuntimePlatform != Device.Android) || _storage.RetrieveBool (Constants.Paid);
 			Load ();
 			if (Device.RuntimePlatform == Device.Android) {
 				LoadProducts ();
 			}
+		}
+
+		void OnSrollChanged (object sender, PositionEventArgs args) {
+			RefreshEnabled = args.Position == 0;
 		}
 
 		public override void OnNavigatingFrom ()
@@ -155,7 +163,7 @@ namespace LiteHelper
 
 		CancellationTokenSource _loadCts;
 
-		void Load (string html = null)
+		void Load (string info = null)
 		{
 
 			CancelLoad ();
@@ -166,20 +174,23 @@ namespace LiteHelper
 				IsLoading = true;
 				Source = null;
 
-				if (html == null) {
+				//нам сюда прилетает либо ничего, либо урл с обновлением. 
+				if (info == null || IsUrl(info)) {
 					using (var httpClient = new HttpClient ()) {
 						try {
-							html = await httpClient.GetStringAsync (Constants.GetHtmlUrl (CityCode, PIN));
+							var url = IsUrl (info) ? info : Constants.GetHtmlUrl (CityCode, PIN);
+							info = await httpClient.GetStringAsync (url);
 						} catch (Exception e) {
 							Debug.WriteLine (e.Message);
-							html = Constants.NoNetwork;
+							info = Constants.NoNetwork;
+							IsLoading = false;
 						}
 						StatusText = string.Empty;
 					}
 				}
 				Source = Constants.GetHtmlUrl (CityCode ,PIN);
-				UpdateCodesInfo (html);
-				var status = GetStatusFor (html);
+				UpdateCodesInfo (info);
+				var status = GetStatusFor (info);
 				if (status != Constants.DefaultStatus && _loadCts != null) {
 					StatusText = status;
 				}
@@ -187,6 +198,11 @@ namespace LiteHelper
 			}, _loadCts.Token);
 		}
 
+		bool IsUrl (string str)
+		{
+			if (string.IsNullOrEmpty (str)) return false;
+			return str.StartsWith ("http");
+		}
 
 		bool _isLoading;
 		public bool IsLoading { 
@@ -238,33 +254,36 @@ namespace LiteHelper
 		public ICommand SendCommand {
 			get {
 				return _sendCommand ?? (_sendCommand = new DelegateCommand ( (obj) => {
-					if (!String.IsNullOrEmpty (Code)) {
-						_codeStorageManager.AddCode (Code, Constants.CodeStatusSending);
-
-
-						CancelLoad ();
-
-
-						_sendCts = new CancellationTokenSource ();
-
-						try {
-							Task.Run (async () => {
-
-								IsLoading = true;
-								var code = Code;
-								Utils.LastSelection = 0;
-								Code = string.Empty;
-								var result = await SendCode (code);
-								if (_sendCts == null) {
-									return;
-								}
-
-								Refresh (result);
-							}, _sendCts.Token);
-						} catch (Exception e) {
-							System.Diagnostics.Debug.WriteLine (e.Message);
-						}
+					if (String.IsNullOrEmpty (Code)) {
+						Refresh (null);
+						return;
 					}
+					_codeStorageManager.AddCode (Code, Constants.CodeStatusSending);
+
+
+					CancelLoad ();
+
+
+					_sendCts = new CancellationTokenSource ();
+
+					try {
+						Task.Run (async () => {
+
+							IsLoading = true;
+							var code = Code;
+							Utils.LastSelection = 0;
+							Code = string.Empty;
+							var result = await SendCode (code);
+							if (_sendCts == null) {
+								return;
+							}
+
+							Refresh (result);
+						}, _sendCts.Token);
+					} catch (Exception e) {
+						System.Diagnostics.Debug.WriteLine (e.Message);
+					}
+
 
 				}));
 			}
@@ -358,8 +377,8 @@ namespace LiteHelper
 		}
 
 
-		ICommand _refreshCommand;
-		public ICommand RefreshCommand {
+		DelegateCommand _refreshCommand;
+		public DelegateCommand RefreshCommand {
 			get {
 				return _refreshCommand ?? (_refreshCommand = new DelegateCommand (Refresh));
 			}
@@ -367,7 +386,7 @@ namespace LiteHelper
 
 
 
-		void Refresh (object page = null)
+		public void Refresh (object page = null)
 		{
 			Load ((string)page);
 		}
@@ -410,7 +429,7 @@ namespace LiteHelper
 						Utils.LastSelection--;
 
 						var index = (Utils.LastSelection >= 0) ? Utils.LastSelection : 0;
-						Code = Code.Remove (Utils.LastSelection, 1);
+						Code = Code.Remove (index, 1);
 					});
 
 
@@ -451,6 +470,18 @@ namespace LiteHelper
 				_code = value;
 				RaisePropertyChanged (() => Code);
 				RaisePropertyChanged (() => CodePlaceholder);
+			}
+		}
+
+		bool _refreshEnabled;
+		public bool RefreshEnabled {
+			get {
+				return _refreshEnabled;
+			}
+
+			set {
+				_refreshEnabled = value;
+				RaisePropertyChanged (() => RefreshEnabled);
 			}
 		}
 

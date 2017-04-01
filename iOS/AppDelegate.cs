@@ -25,6 +25,7 @@ namespace LiteHelper.iOS
 				   .As<IInternalStorage> ();
 
 			builder.RegisterType<CodeManager> ().InstancePerLifetimeScope ();
+			builder.RegisterType<RefreshManager> ().InstancePerLifetimeScope ();
 
 			builder.RegisterInstance (new ResourceManager ())
 				   .As<IResourceManager> ();

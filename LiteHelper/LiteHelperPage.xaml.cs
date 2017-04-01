@@ -51,13 +51,14 @@ namespace LiteHelper
 			}
 		}
 
+
 		void OnNavigating (object sender, WebNavigatingEventArgs e)
 		{
 
-			var engineUrl = Constants.GetHtmlUrl (_bc.CityCode, _bc.Code);
+			var engineUrl = Constants.UrlBeginning (_bc.CityCode);
 			if (e.Url.StartsWith (engineUrl)) {
 				
-				_bc.RefreshCommand.Execute (null);
+				_bc.RefreshCommand.Execute (e.Url);
 				
 			}else if (e.Url.StartsWith ("http")) {
 				try {
