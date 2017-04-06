@@ -11,7 +11,7 @@ using Xamarin.Forms.Platform.Android;
 namespace LiteHelper.Droid.Renderers
 {
 	
-	public class ZoomableWebViewRenderer : WebViewRenderer, Android.Views.View.IOnScrollChangeListener
+	public class ZoomableWebViewRenderer : WebViewRenderer, ViewTreeObserver.IOnScrollChangedListener//, Android.Views.View.IOnScrollChangeListener
 	{
 		RefreshManager _refreshManager;
 
@@ -20,21 +20,22 @@ namespace LiteHelper.Droid.Renderers
 			_refreshManager = ServiceLocator.Current.GetInstance<RefreshManager> ();
 		}
 
-		public void OnScrollChange (Android.Views.View v, int scrollX, int scrollY, int oldScrollX, int oldScrollY)
+		public void OnScrollChanged ()
 		{
 			_refreshManager.DispatchScrollChanged (Control.ScrollY);
 		}
+
 
 		protected override void OnElementPropertyChanged (object sender, PropertyChangedEventArgs e)
 		{
 			if (Control != null) {
 				Control.Settings.BuiltInZoomControls = true;
 				Control.Settings.DisplayZoomControls = false;
-				Control.SetOnScrollChangeListener(this);
+				ViewTreeObserver.AddOnScrollChangedListener (this);
 			}
 			base.OnElementPropertyChanged (sender, e);
 		}
 
-	
+
 	}
 }
