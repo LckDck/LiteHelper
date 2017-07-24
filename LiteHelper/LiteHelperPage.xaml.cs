@@ -55,7 +55,7 @@ namespace LiteHelper
 		void OnNavigating (object sender, WebNavigatingEventArgs e)
 		{
 
-			var engineUrl = Constants.UrlBeginning (_bc.CityCode);
+            var engineUrl = Constants.UrlBeginning (_bc.CityCode, _bc.ProjectCode);
 			if (e.Url.StartsWith (engineUrl)) {
 				
 				_bc.RefreshCommand.Execute (e.Url);

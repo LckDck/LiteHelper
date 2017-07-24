@@ -35,7 +35,5 @@ namespace LiteHelper.Droid.Renderers
 			}
 			base.OnElementPropertyChanged (sender, e);
 		}
-
-
 	}
 }

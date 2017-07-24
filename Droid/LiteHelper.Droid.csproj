@@ -27,7 +27,6 @@
     <DefineConstants>DEBUG;</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <AndroidLinkMode>None</AndroidLinkMode>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -169,10 +168,10 @@
     <AndroidResource Include="Resources\layout\Toolbar.axml" />
     <AndroidResource Include="Resources\values\styles.xml" />
     <AndroidResource Include="Resources\drawable-xxxhdpi\icon.png" />
-    <AndroidResource Include="Resources\drawable-hdpi\ic_keyboard_backspace_black_24dp.png" />
-    <AndroidResource Include="Resources\drawable-xhdpi\ic_keyboard_backspace_black_24dp.png" />
-    <AndroidResource Include="Resources\drawable-xxhdpi\ic_keyboard_backspace_black_24dp.png" />
-    <AndroidResource Include="Resources\drawable-xxxhdpi\ic_keyboard_backspace_black_24dp.png" />
+    <AndroidResource Include="Resources\drawable-hdpi\backspace.png" />
+    <AndroidResource Include="Resources\drawable-xhdpi\backspace.png" />
+    <AndroidResource Include="Resources\drawable-xxhdpi\backspace.png" />
+    <AndroidResource Include="Resources\drawable-xxxhdpi\backspace.png" />
     <AndroidResource Include="Resources\drawable\splash_screen.xml" />
     <AndroidResource Include="Resources\drawable-hdpi\history.png" />
     <AndroidResource Include="Resources\drawable-xhdpi\history.png" />
